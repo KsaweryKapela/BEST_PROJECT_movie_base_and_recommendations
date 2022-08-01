@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+
+{{ super() }}
+<div class="wall-movie-list">
+    {% for x in range (0,7) %}
+
+    <div class="wall-list-item-{{x}} wall-list-ite">
+              <div class="wall-icons">
+        <i class="fa-solid fa-trash thrashcan"></i>
+      </div>
+      <div class="wall-filter">
+          {{ print(movies[x] }}
+          {% if movies[x].movies_database.img_url %}
+        <img class="wall-movie-base-image" src="{{ movies[x].movies_database.img_url }}">
+          {% endif %}
+      </div>
+
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}}

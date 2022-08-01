@@ -1,0 +1,16 @@
+{% include "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+<div class="select-list">
+  {% for user in data %}
+
+    {% if user != current_user.username %}
+
+    <li><a href=" {{ url_for('wall', username = user) }}"> {{ user }}
+       </a></li>
+
+    {% endif %}
+
+  {% endfor %}
+</div>

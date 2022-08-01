@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+  {% block navbar %}
+<div class="search-panel">
+ <div class="database-search">
+ <form method="POST" action="/searchFilms" name="db-search-form" id="db-search-form">
+ <div class="search-input" id="db-s-input">
+  {{ search_form.searched(type="text", placeholder="Sort by title", value='', id="db-search-input",autocomplete="off") }}
+
+<i class="fa-solid fa-shuffle" id="chose-search"></i>
+ </div>
+ </form>
+{% endblock %}
+
+{% block body %}
+
+{{ super() }}
+
+ <div class="database-switches">
+  <div class="database-div">
+   <label class="switch database-switch" id="hit-label">
+   <input type="checkbox" onclick="hitsPressed()" id="hit-switch"/>
+   <div id="hit-div"><p class="switch-text" id="hit-text">HITS</p></div>
+  </label>
+   </div>
+
+  <div class="database-div">
+   <label class="switch database-switch" id="rotten-label">
+   <input type="checkbox" onclick="rottenPressed()" id="rotten-switch"/>
+   <div id="rotten-div"><p class="switch-text" id="rotten-text">FRESH</p></div>
+  </label>
+   </div>
+
+    <div class="database-div">
+   <label class="switch database-switch" id="new-label">
+   <input type="checkbox" onclick="newPressed()" id="new-switch"/>
+   <div id="new-div"><p class="switch-text" id="new-text">NEW</p></div>
+  </label>
+   </div>
+
+        <div class="database-div">
+   <label class="switch database-switch" id="liked-label">
+   <input type="checkbox" onclick="likedPressed()" id="liked-switch"/>
+   <div id="liked-div"><p class="switch-text" id="liked-text">LIKED</p></div>
+  </label>
+   </div>
+
+
+  </div></div>
+
+
+     <div class="database-check">
+     <input type="checkbox" id="fresh-check">
+  <label for="fresh-check">Best</label><br>
+     </div>
+
+<i id="right-arrow" onclick="addIndex();" class="fas fa-angle-double-right right-arrow"></i>
+<i id="left-arrow" onclick="lowerIndex();"  class="left-arrow fas fa-angle-double-left"></i>
+
+
+<ul class="movie-list">
+
+
+{% for x in range(0,4) %}
+
+ <li class="movie-list-item">
+
+          <div class="back-icons" id="all-icons">
+              <i class="fas fa-heart add-movie add-movie-disabled" id="heart"></i>
+              <i class="fa-solid fa-bookmark watch-list watch-list-disabled" id="bookmark"></i>
+              <i class="fa-solid fa-thumbs-down dislike dislike-disabled" id="dislike"></i>
+              <i class="fa-regular fa-circle-xmark ignore ignore-disabled" id="ignore"></i>
+          </div>
+
+      <div class="db-movie-back" id="card-back">
+
+
+      <p class="db-movie-title"></p>
+
+      <ul class="db-columns">
+      <li class="db-small-column">
+      <i class="fa-solid fa-graduation-cap"></i>
+      <p class="db-tomatometer"></p>
+      </li>
+
+       <li class="db-column">
+       <p class="db-release-date"></p>
+       <p class="db-genres"></p>
+
+       </li>
+
+
+      <li class="db-small-column">
+      <i class="fa-solid fa-user"></i>
+      <p class="db-audience"></p>
+      </li></ul>
+
+
+      <p class="db-director"></p>
+      <p class="db-description"></p>
+      <p class="db-studio"></p>
+      <p class="db-boxoffice"></p>
+
+
+     </div>
+
+     <div class="filtered-image">
+     <div class="filter">
+     <img class="movie-base-image" src="">
+
+    <div/>
+   </div>
+  </div>
+ </li>
+
+{% endfor %}
+
+</ul>
+</div>
+<script src="{{ url_for('static', filename='js/movie_base_var.js') }}"></script>
+<script src="{{ url_for('static', filename='js/movie_base_search.js') }}"></script>
+<script src="{{ url_for('static', filename='js/movie_base_switches.js') }}"></script>
+<script src="{{ url_for('static', filename='js/movie_base_buttons.js') }}"></script>
+<script src="{{ url_for('static', filename='js/movie_base.js') }}"></script>
+
+{% endblock %}

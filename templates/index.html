@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+
+{{ super() }}
+
+<div class="wall-buttons">
+
+<button class='wall-button' onclick="location.href='{{ url_for('favorites', index='1') }}'"  type="button">Favorites</button>
+<button class='wall-button' onclick="location.href='{{ url_for('watch_list', index='1') }}'" type="button">Watch list</button>
+<button class='wall-button' onclick="location.href='{{ url_for('disliked', index='1') }}'" type="button">Disliked</button>
+<button class='wall-button' onclick="location.href='{{ url_for('ignored', index='1') }}'" type="button">Ignored</button>
+</div>
+
+{% if movies %}
+<div class="wall-movie-list">
+    {% for x in range (0,7) %}
+              {% if movies[x] %}
+
+    <div class="wall-list-item-{{x}} wall-list-items">
+
+      <div class="wall-filter wall-list-img">
+        <img class="wall-movie-base-image" src="{{ movies[x].movies_database.img_url }}">
+      </div>
+        <div class="wall-icons">
+
+                <i class="fa-solid fa-trash thrashcan"></i>
+
+      </div>
+
+    </div>
+              {% endif %}
+
+    {% endfor %}
+</div>
+
+              {% endif %}
+{% if right_arrow %}
+<i id="right-arrow-wall" class="fas fa-angle-double-right right-arrow-wall"></i>
+{% endif %}
+<i id="left-arrow-wall" class="fas fa-angle-double-left left-arrow-wall"></i>
+
+<script src="{{ url_for('static', filename='js/wall.js') }}"></script>
+
+{% endblock %}}

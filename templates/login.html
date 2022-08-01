@@ -1,0 +1,7 @@
+{% include "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+<div class="content">
+{{ wtf.quick_form(form, novalidate=True) }}
+    </div>
+
