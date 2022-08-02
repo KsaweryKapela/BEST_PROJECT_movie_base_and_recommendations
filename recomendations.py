@@ -1,9 +1,12 @@
 import itertools
+import json
 import math
 import re
 from collections import Counter
+import sqlalchemy
 from sqlalchemy import and_
-from main import MoviesDatabase, UsersFilms, db, UserSuggestion, MovieCast
+from main import MoviesDatabase, UsersFilms, db, UserSuggestion, Actors
+
 
 
 def give_points(list_name, points, movie_type):

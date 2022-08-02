@@ -47,7 +47,6 @@ class UsersFilms(db.Model):
 class MoviesDatabase(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     movie_ids = db.relationship('UsersFilms', backref='movies_database')
-    ids_for_cast = db.relationship('MovieCast', backref='movies_database')
 
     title = db.Column(db.String(300), unique=False, nullable=True)
     description = db.Column(db.String(5000), unique=False, nullable=True)
@@ -87,10 +86,37 @@ class UserSuggestion(db.Model):
     points = db.Column(db.Integer, unique=False, nullable=True)
 
 
-class MovieCast(db.Model):
+movie_actors = db.Table('movie_actors',
+                        db.Column('actor_id', db.Integer, db.ForeignKey('actors.id')),
+                        db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
+
+
+class Actors(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    movie_id = db.Column(db.Integer, db.ForeignKey('movies_database.id'), nullable=True)
-    actor = db.Column(db.String(500), unique=False, nullable=True)
+    name = db.Column(db.String(500), unique=False, nullable=True)
+    plays_in = db.relationship('MoviesDatabase', secondary=movie_actors, backref='actors')
+
+
+movie_genres = db.Table('movie_genres',
+                        db.Column('genre_id', db.Integer, db.ForeignKey('genres.id')),
+                        db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
+
+
+class Genres(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(500), unique=False, nullable=True)
+    genre_of = db.relationship('MoviesDatabase', secondary=movie_genres, backref='genres')
+
+
+movie_text = db.Table('movie_text',
+                        db.Column('text_id', db.Integer, db.ForeignKey('text.id')),
+                        db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
+
+
+class Text(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(500), unique=False, nullable=True)
+    text_of = db.relationship('MoviesDatabase', secondary=movie_text, backref='text')
 
 
 db.create_all()
