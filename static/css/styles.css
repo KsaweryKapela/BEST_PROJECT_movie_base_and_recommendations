@@ -415,7 +415,8 @@ color: #03adfc;}
 color: #a1d1a5;}
 
 .ignore-enabled {
-transform: scale(1.5);color: #17ff2a;}
+transform: scale(1.5);
+color: #17ff2a;}
 
 /* Move base arrows */
 .right-arrow-wall {
@@ -510,10 +511,76 @@ left: 2.9%;
 
 /* Recommendations */
 .recommendation-div {
+columns: 3;
+position: relative;
+top: -260px;
+width: 90%;
+margin-left: auto;
+margin-right: auto;
 }
 
 .recommend-image {
-width: 400px;
+width: 100%;
+}
+
+.back-icons-recommend-1 {
+height: 10%;
+width: 10%;
 position: relative;
-left: 33%;
-bottom: 270px;}
+top: 40%;
+margin-left: auto;
+}
+
+.back-icons-recommend-2 {
+height: 10%;
+width: 10%;
+position: relative;
+top: 40%;
+
+}
+
+
+.recommend-icon {
+font-size: 2.5rem;
+transition: transform .5s, color .75s ease-out, size .5s;
+margin-bottom: 100%;
+cursor: pointer;
+}
+
+.recommend-icon:hover{
+transform: scale(1.2);}
+
+.add-movie-recommend {
+color: #de9090;
+}
+
+.watch-list-recommend {
+color: #e3ca8f;
+padding-left: 11%;
+}
+
+.dislike-recommend {
+color: #97bbcc;
+}
+
+.ignore-recommend {
+color: #a1d1a5;
+}
+
+.add-movie-recommend:hover{
+color:#ff0000;
+}
+
+.watch-list-recommend:hover{
+color: #f5ad02;
+}
+
+.dislike-recommend:hover{
+color: #03adfc;
+}
+
+.ignore-recommend:hover{
+color: #17ff2a;
+}
+
+

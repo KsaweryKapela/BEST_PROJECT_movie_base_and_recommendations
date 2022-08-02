@@ -67,7 +67,7 @@ def update_recommendations(user_id):
     else:
         print('critics')
 
-    for movie in MoviesDatabase.query.filter(MoviesDatabase.computed_critic_score > 70).all():
+    for movie in MoviesDatabase.query.filter(MoviesDatabase.computed_critic_score > 70).all()[:100]:
         #klasa recommendations
         movie_points = 0
 

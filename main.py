@@ -217,7 +217,7 @@ def logout():
 
 @app.route('/edit_user_lists', methods=['GET'])
 def edit_user_lists():
-    index = request.args.get('value')
+    index = int(request.args.get('value'))
     list_type = request.args.get('command2')
     command = request.args.get('command')
     list_types = ['heart', 'bookmark', 'dislike', 'ignore']
@@ -249,6 +249,17 @@ def edit_user_lists():
             db.session.delete(movie)
         session['redirect_link'] = list_type
         print(session['redirect_link'])
+
+    elif command == 'recAdd':
+
+        movie = UsersFilms(user_id=current_user.id, movie_id=MoviesDatabase.query.
+                           filter_by(title=UserSuggestion.query.order_by(cast(UserSuggestion.points, Integer).desc())[index - 1].title).
+                           filter_by(computed_audience_score=UserSuggestion.query.order_by(cast(UserSuggestion.points, Integer).desc())
+                                     [index - 1].computed_audience_score).first().id,
+                           tag=list_type)
+        print(movie)
+        db.session.add(movie)
+
     db.session.commit()
     return {'success': 'yay'}
 
