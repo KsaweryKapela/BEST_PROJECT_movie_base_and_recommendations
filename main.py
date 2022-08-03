@@ -119,6 +119,28 @@ class Text(db.Model):
     text_of = db.relationship('MoviesDatabase', secondary=movie_text, backref='text')
 
 
+movie_directors = db.Table('movie_directors',
+                        db.Column('director_id', db.Integer, db.ForeignKey('directors.id')),
+                        db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
+
+
+class Directors(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(500), unique=False, nullable=True)
+    directed = db.relationship('MoviesDatabase', secondary=movie_directors, backref='director_of')
+
+
+movie_writers = db.Table('movie_writers',
+                        db.Column('writer_id', db.Integer, db.ForeignKey('writers.id')),
+                        db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
+
+
+class Writers(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(500), unique=False, nullable=True)
+    wrote = db.relationship('MoviesDatabase', secondary=movie_writers, backref='writer_of')
+
+
 db.create_all()
 
 
@@ -480,8 +502,9 @@ def fetch_database():
 
 @app.route('/recommend', methods=['GET', 'POST'])
 def recommendation_page():
-    from recomendations import update_recommendations
-    update_recommendations(current_user.id)
+    from recomendations import MovieRecommendations
+    movie = MovieRecommendations()
+    movie.update_recommendations(current_user.id)
 
     return render_template('recommend.html')
 

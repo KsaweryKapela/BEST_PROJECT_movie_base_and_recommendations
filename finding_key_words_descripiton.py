@@ -1,5 +1,6 @@
-
 from rake_nltk import Rake
+
+from main import MoviesDatabase
 
 all_keywords = []
 points = 0
