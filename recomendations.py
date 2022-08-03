@@ -51,6 +51,12 @@ class MovieRecommendations:
 
         db.session.commit()
 
+    def test_x(self):
+        for item in MoviesDatabase.id.all():
+            print(item.active)
+
+# recommend = MovieRecommendations()
+# recommend.update_recommendations(2)
 
 recommend = MovieRecommendations()
-recommend.update_recommendations(2)
+recommend.test_x()
