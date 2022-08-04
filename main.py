@@ -33,7 +33,7 @@ class Users(db.Model, UserMixin):
     password = db.Column(db.String(255), nullable=False)
     movies = db.relationship('UsersFilms', backref='users')
 
-
+#many to many
 class UsersFilms(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
@@ -95,6 +95,9 @@ class Actors(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), unique=False, nullable=True)
     plays_in = db.relationship('MoviesDatabase', secondary=movie_actors, backref='actors')
+
+    def __repr__(self):
+        return str(self.id)
 
 
 movie_genres = db.Table('movie_genres',
