@@ -1,25 +1,54 @@
 import json
 
-from main import MoviesDatabase, Actors, db, Genres, Text, Directors, Writers
+from main import MoviesDatabase, Actors, db, Genres, Text, Directors, Writers, UsersFilms, user_movie_actors
+
+
+# populating actors
 #
-# # populating actors
 # for movie in MoviesDatabase.query.all():
+#     index = 0
 #     for cast_member in json.loads(movie.cast).items():
+#         if index == 3:
+#             break
+#         index += 1
 #         x = cast_member[1]
 #         if x == 'Director' or x == 'Screenwriter' or x == 'Art Director' or x == 'Set Decoration' or x == 'Casting' or\
 #                 x == 'Producer' or x == 'Executive Producer' or x == 'Original Music' or x == 'Film Editing'\
-#                 or x == 'Writer'  or x == 'Cinematographer' or x == 'Production Design' or x == 'Costume Design'\
+#                 or x == 'Writer' or x == 'Cinematographer' or x == 'Production Design' or x == 'Costume Design'\
+#                 or x == 'Film Editor' or x == 'Associate Producer' or x == 'Original Music and Songs' \
+#                 or x == 'Co Editor' or x == 'Hair Stylist' or x == 'Makeup Artist' or x == 'Co Executive Producer'\
+#                 or x == 'Co Producer':
+#             pass
+#         else:
+#             if not Actors.query.filter_by(name=cast_member[0]).first():
+#                 new_actor = Actors(name=cast_member[0])
+#                 db.session.add(new_actor)
+#                 db.session.commit()
+#
+#
+# for movie in MoviesDatabase.query.all():
+#     index = 0
+#     print(movie.id)
+#     for cast_member in json.loads(movie.cast).items():
+#         if index == 3:
+#             break
+#         index += 1
+#         x = cast_member[1]
+#         if x == 'Director' or x == 'Screenwriter' or x == 'Art Director' or x == 'Set Decoration' or x == 'Casting' or\
+#                 x == 'Producer' or x == 'Executive Producer' or x == 'Original Music' or x == 'Film Editing'\
+#                 or x == 'Writer' or x == 'Cinematographer' or x == 'Production Design' or x == 'Costume Design'\
 #                 or x == 'Film Editor' or x == 'Associate Producer' or x == 'Original Music and Songs' \
 #                 or x == 'Co Editor' or x == 'Hair Stylist' or x == 'Makeup Artist' or x == 'Co Executive Producer'\
 #                 or x == 'Co Producer':
 #             pass
 #         else:
 #             if Actors.query.filter_by(name=cast_member[0]).first():
-#                 print(Actors.query.filter_by(name=cast_member[0]).first().name)
 #                 actor = Actors.query.filter_by(name=cast_member[0]).first()
 #                 actor.plays_in.append(movie)
 #
-#
+# db.session.commit()
+
+
 # # populating genres
 # all_genres = []
 # for gnr in MoviesDatabase.query.all():
@@ -99,3 +128,11 @@ from main import MoviesDatabase, Actors, db, Genres, Text, Directors, Writers
 #     for writer in movie.writer.split(', '):
 #         movie_writer = Writers.query.filter_by(name=writer).first()
 #         movie_writer.wrote.append(movie)
+
+# populating users_actors
+
+# for movie in UsersFilms.query.all():
+#     for actor in movie.movies_database.actors:
+#         movie_actor = actor
+#         movie_actor.users_movie_plays.append(movie)
+

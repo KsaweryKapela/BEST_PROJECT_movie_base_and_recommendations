@@ -7,6 +7,8 @@ class MovieRecommendations:
 
     def __init__(self):
         self.points = 0
+        self.highest_score = 0
+        self.movie_to_recommend = None
         self.actors_dict = {}
         self.genres_dict = {}
         self.directors_dict = {}
@@ -14,12 +16,6 @@ class MovieRecommendations:
         self.year_dict = {}
         self.PG_dict = {}
         self.users_id_list = []
-        self.clear_old_recommendations()
-
-    @staticmethod
-    def clear_old_recommendations():
-        UserSuggestion.query.delete()
-        db.session.commit()
 
     def prepare_score(self, movie, points):
         if movie.tag == 'heart':
@@ -34,7 +30,9 @@ class MovieRecommendations:
 
     def populate_dictionary(self, movie, column_name, dictionary_name, points):
         for item in column_name:
-            if item in dictionary_name:
+
+            if item.id in list(dictionary_name.keys()):
+
                 dictionary_name[item.id] += self.prepare_score(movie, points)
             else:
                 dictionary_name[item.id] = self.prepare_score(movie, points)
@@ -46,13 +44,16 @@ class MovieRecommendations:
             else:
                 dictionary_name[item_def] = self.prepare_score(movie, points)
 
-
-
     def populate_all_dictionaries(self, user_id):
-        for movie in UsersFilms.query.filter(UsersFilms.user_id == user_id).all():
-            self.users_id_list.append(movie.movie_id)
+        self.users_id_list = [movie.movie_id for movie in UsersFilms.query.filter(UsersFilms.user_id == user_id).all()]
 
-            self.populate_dictionary(movie, movie.movies_database.actors, self.actors_dict, 25)
+        for movie in UsersFilms.query.filter(UsersFilms.user_id == user_id). \
+                filter(MoviesDatabase.id.in_(self.users_id_list)).\
+                join(UsersFilms.movies_database). \
+                options(joinedload(UsersFilms.movies_database)).\
+                all():
+
+            self.populate_dictionary(movie, movie.users_actors, self.actors_dict, 25)
             self.populate_dictionary(movie, movie.movies_database.genres, self.genres_dict, 25)
             self.populate_dictionary(movie, movie.movies_database.director_of, self.directors_dict, 25)
             self.populate_dictionary(movie, movie.movies_database.writer_of, self.writers_dict, 12.5)
@@ -109,12 +110,11 @@ class MovieRecommendations:
 
     def update_recommendations(self, user_id):
         self.clean_up_dictionaries()
-
         self.populate_all_dictionaries(user_id)
 
         for movie in MoviesDatabase.query. \
                 filter(Actors.id.in_(self.get_liked_items(self.actors_dict))). \
-                filter(MoviesDatabase.PG.in_(self.get_liked_items(self.PG_dict))). \
+                filter(MoviesDatabase.computed_critic_score > 70).\
                 filter(MoviesDatabase.id.notin_(self.users_id_list)). \
                 join(MoviesDatabase.actors). \
                 options(joinedload(MoviesDatabase.actors)). \
@@ -125,9 +125,12 @@ class MovieRecommendations:
                 all():
 
             self.split_the_points(movie)
-            new_movie = UserSuggestion(title=movie.title, points=self.points)
-            db.session.add(new_movie)
-        db.session.commit()
+
+            if self.points > self.highest_score:
+                self.highest_score = self.points
+                self.movie_to_recommend = movie.id
+
+        return self.movie_to_recommend
 
 
 recommend = MovieRecommendations()

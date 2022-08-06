@@ -1,9 +1,6 @@
-import json
-from sqlite3 import Date
+import time
 from numerize import numerize
-import requests
-from collections import Counter
-from flask import Flask, render_template, redirect, url_for, request, jsonify, session
+from flask import Flask, render_template, redirect, url_for, request, session
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -32,6 +29,7 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
     movies = db.relationship('UsersFilms', backref='users')
+
 
 #many to many
 class UsersFilms(db.Model):
@@ -84,6 +82,7 @@ class UserSuggestion(db.Model):
     computed_audience_score = db.Column(db.Integer, unique=False, nullable=True)
     computed_critic_score = db.Column(db.Integer, unique=False, nullable=True)
     points = db.Column(db.Integer, unique=False, nullable=True)
+    img_url = db.Column(db.String(500), unique=False, nullable=True)
 
 
 movie_actors = db.Table('movie_actors',
@@ -91,10 +90,16 @@ movie_actors = db.Table('movie_actors',
                         db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
 
 
+user_movie_actors = db.Table('user_movie_actors',
+                        db.Column('actor_id', db.Integer, db.ForeignKey('actors.id')),
+                        db.Column('user_movie_id', db.Integer, db.ForeignKey('users_films.id')))
+
+
 class Actors(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), unique=False, nullable=True)
     plays_in = db.relationship('MoviesDatabase', secondary=movie_actors, backref='actors')
+    users_movie_plays = db.relationship('UsersFilms', secondary=user_movie_actors, backref='users_actors')
 
     def __repr__(self):
         return str(self.id)
@@ -282,14 +287,20 @@ def edit_user_lists():
                     UsersFilms.query.filter(and_(UsersFilms.user_id == current_user.id),
                                             (UsersFilms.movie_id == session[f'movie{index}'])).first().tag = list_type
 
+
                 else:
                     movie = UsersFilms(user_id=current_user.id, movie_id=session[f'movie{index}'], tag=list_type)
                     db.session.add(movie)
+                    for actor in MoviesDatabase.query.filter_by(id=session[f'movie{index}']).first().actors:
+                        actor = Actors.query.filter_by(id=actor.id).first()
+                        actor.users_movie_plays.append(movie)
+
 
             elif command == 'del':
                 movies = UsersFilms.query.filter(and_(UsersFilms.user_id == current_user.id),
                                                  (UsersFilms.movie_id == session[f'movie{index}']),
                                                  (UsersFilms.tag == list_type)).all()
+
                 for movie in movies:
                     db.session.delete(movie)
 
@@ -298,17 +309,17 @@ def edit_user_lists():
                                          (UsersFilms.movie_id == session[f'movie{index}'])).all()
         for movie in movies:
             db.session.delete(movie)
+
         session['redirect_link'] = list_type
-        print(session['redirect_link'])
 
     elif command == 'recAdd':
 
-        movie = UsersFilms(user_id=current_user.id, movie_id=MoviesDatabase.query.
-                           filter_by(title=UserSuggestion.query.order_by(cast(UserSuggestion.points, Integer).desc())[index - 1].title).
-                           filter_by(computed_audience_score=UserSuggestion.query.order_by(cast(UserSuggestion.points, Integer).desc())
-                                     [index - 1].computed_audience_score).first().id,
-                           tag=list_type)
-        print(movie)
+        movie = UsersFilms(user_id=current_user.id, movie_id=session['recommendations_movie_id'], tag=list_type)
+
+        for actor in MoviesDatabase.query.get(session['recommendations_movie_id']).actors:
+            actor = Actors.query.filter_by(id=actor.id).first()
+            actor.users_movie_plays.append(movie)
+
         db.session.add(movie)
 
     db.session.commit()
@@ -335,6 +346,12 @@ def search_films():
             movie = MoviesDatabase.query.filter_by(title=form.searched.data).first()
             new_movie = UsersFilms(user_id=current_user.id, movie_id=movie.id, tag='heart')
             db.session.add(new_movie)
+
+            for actor in MoviesDatabase.query.filter_by(id=movie.id).first().actors:
+                actor = Actors.query.filter_by(id=actor.id).first()
+                print(actor)
+                actor.users_movie_plays.append(new_movie)
+
             db.session.commit()
         else:
             session['searched_data'] = form.searched.data
@@ -367,8 +384,12 @@ def fetch_users():
 
 @app.route('/fetch_moviebase', methods=['GET'])
 def fetch_database():
-    searched_data = session['searched_data']
-    session['searched_data'] = ''
+    try:
+        searched_data = session['searched_data']
+
+    except KeyError:
+        session['searched_data'] = ''
+        searched_data = session['searched_data']
 
     if searched_data == '':
         key = request.args.get('key')
@@ -505,20 +526,20 @@ def fetch_database():
 
 @app.route('/recommend', methods=['GET', 'POST'])
 def recommendation_page():
-    from recomendations import MovieRecommendations
-    movie = MovieRecommendations()
-    movie.update_recommendations(current_user.id)
-
     return render_template('recommend.html')
 
 
 @app.route('/fetch_recommend', methods=['GET', 'POST'])
 def fetch_recommend():
-    index = int(request.args.get('index'))
-    movie_url = MoviesDatabase.query.filter_by(title=UserSuggestion.query.order_by(UserSuggestion.points.desc())[index].
-                                               title).first().img_url
+    from recomendations import MovieRecommendations
 
-    return {'movie_url': movie_url}
+    recommend = MovieRecommendations()
+    movie_id = recommend.update_recommendations(current_user.id)
+    print(movie_id)
+    session['recommendations_movie_id'] = movie_id
+    movie = MoviesDatabase.query.get(movie_id)
+
+    return {'movie_url': movie.img_url}
 
 
 if __name__ == "__main__":
