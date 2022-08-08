@@ -109,11 +109,16 @@ movie_genres = db.Table('movie_genres',
                         db.Column('genre_id', db.Integer, db.ForeignKey('genres.id')),
                         db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
 
+user_movie_genres = db.Table('user_movie_genres',
+                        db.Column('genre_id', db.Integer, db.ForeignKey('genres.id')),
+                        db.Column('movie_id', db.Integer, db.ForeignKey('users_films.id')))
+
 
 class Genres(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), unique=False, nullable=True)
     genre_of = db.relationship('MoviesDatabase', secondary=movie_genres, backref='genres')
+    user_genre_of = db.relationship('UsersFilms', secondary=user_movie_genres, backref='users_genres')
 
 
 movie_text = db.Table('movie_text',
@@ -150,6 +155,8 @@ class Writers(db.Model):
 
 
 db.create_all()
+
+
 
 
 @app.context_processor
@@ -294,7 +301,9 @@ def edit_user_lists():
                     for actor in MoviesDatabase.query.filter_by(id=session[f'movie{index}']).first().actors:
                         actor = Actors.query.filter_by(id=actor.id).first()
                         actor.users_movie_plays.append(movie)
-
+                    for genre in MoviesDatabase.query.filter_by(id=session[f'movie{index}']).first().genres:
+                        genre = Genres.query.filter_by(id=genre.id).first()
+                        genre.user_genre_of.append(movie)
 
             elif command == 'del':
                 movies = UsersFilms.query.filter(and_(UsersFilms.user_id == current_user.id),
@@ -319,6 +328,10 @@ def edit_user_lists():
         for actor in MoviesDatabase.query.get(session['recommendations_movie_id']).actors:
             actor = Actors.query.filter_by(id=actor.id).first()
             actor.users_movie_plays.append(movie)
+
+        for genre in MoviesDatabase.query.get(session['recommendations_movie_id']).genres:
+            genre = Genres.query.filter_by(id=genre.id).first()
+            genre.user_genre_of.append(movie)
 
         db.session.add(movie)
 
@@ -349,8 +362,11 @@ def search_films():
 
             for actor in MoviesDatabase.query.filter_by(id=movie.id).first().actors:
                 actor = Actors.query.filter_by(id=actor.id).first()
-                print(actor)
                 actor.users_movie_plays.append(new_movie)
+
+            for genre in MoviesDatabase.query.filter_by(id=movie.id).first().genres:
+                genre = Genres.query.filter_by(id=genre.id).first()
+                genre.user_genre_of.append(new_movie)
 
             db.session.commit()
         else:
@@ -386,7 +402,8 @@ def fetch_users():
 def fetch_database():
     try:
         searched_data = session['searched_data']
-
+        session['searched_data'] = ''
+        print(searched_data)
     except KeyError:
         session['searched_data'] = ''
         searched_data = session['searched_data']
@@ -531,11 +548,10 @@ def recommendation_page():
 
 @app.route('/fetch_recommend', methods=['GET', 'POST'])
 def fetch_recommend():
-    from recomendations import MovieRecommendations
 
+    from recomendations import MovieRecommendations
     recommend = MovieRecommendations()
     movie_id = recommend.update_recommendations(current_user.id)
-    print(movie_id)
     session['recommendations_movie_id'] = movie_id
     movie = MoviesDatabase.query.get(movie_id)
 
