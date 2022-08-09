@@ -15,71 +15,40 @@
 
 {% block body %}
 
-<a href="{{ url_for('home') }}">
- {% if current_user.is_authenticated: %}
-{% block heading %} <h1 class="heading">Home of {{ current_user.username }} </h1>{% endblock %}</a>
+<a class="no-effects" href="{{ url_for('home') }}">
+<div class="heading-div">
+<h1 class="title">YOUR PERSONAL <span class="title2"> CLASSICS </span></h1>
+</div></a>
 
-<div class="navbar-position">
- <ul class="navbar-nav mr-auto">
 
- <li class="nav-item active">
- <a class="nav-link" href="{{ url_for('home') }}">My movies <span class="sr-only">(current)</span>
+<div class="navbar">
+ <div class="navbar-background">
+ <ul>
+
+     <li class="nav-item">
+ <a href="{{ url_for('recommendation_page') }}">RECOMMEND</a>
+ </li>
+
+   <li class="nav-item">
+ <a href="{{ url_for('movie_base') }}">MOVIE-BASE</a>
+ </li>
+
+
+ <li class="nav-item">
+ <a href="{{ url_for('home') }}">MY MOVIES
  </a></li>
- <li class="nav-item">
- <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
- </li>
- {% else %}
-  <h1 class="heading">Home</h1></a>
 
-<div class="navbar-position">
- <ul class="navbar-nav mr-auto">
 
- <li class="nav-item active">
- <a class="nav-link" href="{{ url_for('register') }}">Register</a> </li>
 
- <li class="nav-item">
- <a class="nav-link" href="{{ url_for('login') }}">Login</a>
- </li>
 
- {% endif %}
-
- <li class="nav-item">
- <a class="nav-link disabled" href="{{ url_for('movie_base') }}">Movie-base</a>
-
- <li class="nav-item">
- <a class="nav-link disabled" href="{{ url_for('recommendation_page') }}">Recommend</a>
- </li>
  </ul>
+  </div>
 </div>
 
-  {% block navbar %}
- <div class="wrapper">
- <form method="POST" action="/searchFilms" name="search-form" id="search-form">
- <div class="search-input" id="s-input">
-  {{ search_form.searched(type="text", placeholder="Search", id="search-input", class="search-query", autocomplete="off") }}
- <div class="autocom-box" id="sugg-box"></div>
 
-  <div class="icon">
-<button type="submit" class="fas fa-search invisible-background"></button>
- </div>
- </div>
- </form>
-{% endblock %}
-
-{% if not hide %}
-  <label class="switch" id="whole-switch">
-   <input name="switch" type="checkbox" onclick="pressed()" id="search-switch"/>
-   <div><p class="switch-text" id="switch-label">Films</p></div>
-  </label>
-{% endif %}
-     </div>
-
-
-
-<script src="{{ url_for('static', filename='js/search_script.js') }}"></script>
-<script src="{{ url_for('static', filename='js/switch_script.js') }}"></script>
-<script src="{{ url_for('static', filename='js/fetch_functions.js') }}"></script>
 <script src="https://kit.fontawesome.com/231aedabbf.js" crossorigin="anonymous"></script>
+
+
 
 
 

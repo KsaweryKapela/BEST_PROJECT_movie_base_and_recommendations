@@ -7,10 +7,28 @@
 
 <div class="wall-buttons">
 
-<button class='wall-button' onclick="location.href='{{ url_for('favorites', index='1') }}'"  type="button">Favorites</button>
-<button class='wall-button' onclick="location.href='{{ url_for('watch_list', index='1') }}'" type="button">Watch list</button>
-<button class='wall-button' onclick="location.href='{{ url_for('disliked', index='1') }}'" type="button">Disliked</button>
-<button class='wall-button' onclick="location.href='{{ url_for('ignored', index='1') }}'" type="button">Ignored</button>
+<button class='wall-button button-favorites' onclick="location.href='{{ url_for('favorites', index='1') }}'"  type="button">Favorites</button>
+<button class='wall-button button-watch-list' onclick="location.href='{{ url_for('watch_list', index='1') }}'" type="button">Watch list</button>
+<button class='wall-button button-disliked' onclick="location.href='{{ url_for('disliked', index='1') }}'" type="button">Disliked</button>
+<button class='wall-button button-ignored' onclick="location.href='{{ url_for('ignored', index='1') }}'" type="button">Ignored</button>
+</div>
+
+
+<div class="index-search-wrapper">
+
+ <form method="POST" action="/searchFilms" name="search-form" id="search-form">
+
+ <div class="search-input" id="s-input">
+
+  {{ search_form.searched(type="text", placeholder="Search", id="search-input", class="search-query", autocomplete="off") }}
+       <div class="icon">
+<button type="submit" class="fas fa-search invisible-background"></button>
+ </div>
+ <div class="autocom-box" id="sugg-box"></div>
+
+ </div>
+ </form>
+
 </div>
 
 {% if movies %}
@@ -20,7 +38,7 @@
 
     <div class="wall-list-item-{{x}} wall-list-items">
 
-      <div class="wall-filter wall-list-img">
+      <div class="wall-list-img">
         <img class="wall-movie-base-image" src="{{ movies[x].movies_database.img_url }}">
       </div>
         <div class="wall-icons">
@@ -41,6 +59,10 @@
 {% endif %}
 <i id="left-arrow-wall" class="fas fa-angle-double-left left-arrow-wall"></i>
 
+<script src="{{ url_for('static', filename='js/search_script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/fetch_functions.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/wall.js') }}"></script>
+
 
 {% endblock %}}

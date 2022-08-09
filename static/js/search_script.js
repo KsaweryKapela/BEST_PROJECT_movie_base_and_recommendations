@@ -2,28 +2,23 @@ searchWrapper = document.getElementById("s-input");
 inputBox = document.getElementById("search-input");
 suggBox = document.getElementById("sugg-box");
 wholeSwitch = document.getElementById("whole-switch");
+const searchForm = document.getElementById("search-form");
 
-if (inputBox) {
+
+
 inputBox.onkeyup = (e)=>{
-    wholeSwitch.style.display = 'none';
     let userData = e.target.value;
     let emptyArray = [];
 
     if(userData){
 
-       if(searchSwitch.checked == false){
        getFetch('/fetch_movies', userData);
 
-       }else{
-       getFetch('/fetch_users', userData)};
    }
 
    else{
         searchWrapper.classList.remove("active");
-        wholeSwitch.style.display = 'block';
-
-
-    }}};
+    }};
 
 
 async function getFetch(url, data) {
@@ -50,6 +45,4 @@ async function getFetch(url, data) {
            allList[i].addEventListener("click", e=> {inputBox.value = (e.target.textContent),
            searchWrapper.classList.remove("active");
            searchForm.submit();
-
-    wholeSwitch.style.display = 'block';
 })}};

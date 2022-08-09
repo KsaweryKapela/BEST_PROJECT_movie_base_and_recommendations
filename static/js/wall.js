@@ -2,7 +2,6 @@ var thrashCan = [].slice.call(document.getElementsByClassName('thrashcan'));
 thrashCan.forEach(element => element.addEventListener('click', deleteMovie));
 
 
-console.log(document.getElementById('right-arrow-wall'));
 
 if (document.getElementById('right-arrow-wall')){
 const rightArrowWall = document.getElementById('right-arrow-wall')
@@ -14,9 +13,11 @@ const leftArrowWall = document.getElementById('left-arrow-wall')
 leftArrowWall.addEventListener('click', clickArrow);
 
 
-
 if (currentUrl.charAt(currentUrl.length - 1) == '1'){
 leftArrowWall.style.visibility = 'hidden';}
+
+document.getElementsByClassName("button-" + document.URL.split('/')[document.URL.split('/').length - 2])[0].disabled = true;
+
 
 function clickArrow(){
 if (this.id == 'left-arrow-wall'){
