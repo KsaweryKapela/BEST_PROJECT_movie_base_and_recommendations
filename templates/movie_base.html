@@ -2,23 +2,19 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 
-  {% block navbar %}
-<div class="search-panel">
- <div class="database-search">
- <form method="POST" action="/searchFilms" name="db-search-form" id="db-search-form">
- <div class="search-input" id="db-s-input">
-  {{ search_form.searched(type="text", placeholder="Sort by title", value='', id="db-search-input",autocomplete="off") }}
-
-<i class="fa-solid fa-shuffle" id="chose-search"></i>
- </div>
- </form>
-{% endblock %}
-
 {% block body %}
 
 {{ super() }}
 
+
+ <div class="search-input db-search-input" id="s-input">
+
+  {{ search_form.searched(type="text", placeholder="Search", id="db-search-input", class="search-query db-search-query", autocomplete="off") }}
+</div>
+
+
  <div class="database-switches">
+
   <div class="database-div">
    <label class="switch database-switch" id="hit-label">
    <input type="checkbox" onclick="hitsPressed()" id="hit-switch"/>
@@ -48,7 +44,7 @@
    </div>
 
 
-  </div></div>
+  </div>
 
 
      <div class="database-check">
@@ -60,12 +56,16 @@
 <i id="left-arrow" onclick="lowerIndex();"  class="left-arrow fas fa-angle-double-left"></i>
 
 
-<ul class="movie-list">
+
+
+<div class="movie-list">
 
 
 {% for x in range(0,4) %}
 
- <li class="movie-list-item">
+ <div class="movie-list-item">
+
+          <img class="movie-base-image" src="">
 
           <div class="back-icons" id="all-icons">
               <i class="fas fa-heart add-movie add-movie-disabled" id="heart"></i>
@@ -106,23 +106,16 @@
 
      </div>
 
-     <div class="filtered-image">
-     <div class="filter">
-     <img class="movie-base-image" src="">
 
-    <div/>
-   </div>
-  </div>
- </li>
+ </div>
 
 {% endfor %}
 
-</ul>
 </div>
+
 <script src="{{ url_for('static', filename='js/movie_base_var.js') }}"></script>
 <script src="{{ url_for('static', filename='js/movie_base_search.js') }}"></script>
 <script src="{{ url_for('static', filename='js/movie_base_switches.js') }}"></script>
 <script src="{{ url_for('static', filename='js/movie_base_buttons.js') }}"></script>
 <script src="{{ url_for('static', filename='js/movie_base.js') }}"></script>
-
 {% endblock %}

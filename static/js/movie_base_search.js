@@ -1,4 +1,4 @@
-choseSearch = document.getElementById("chose-search")
+//choseSearch = document.getElementById("chose-search")
 inputBox = document.getElementById("db-search-input");
 userData = ''
 search = 'title';
@@ -9,7 +9,7 @@ inputBox.onkeyup = (e)=>{
     userData = e.target.value;
     checkForSwitches();}
 
-choseSearch.addEventListener('click', swapSearch)
+//choseSearch.addEventListener('click', swapSearch)
 
 function swapSearch() {
 if(clicks==0){

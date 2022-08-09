@@ -9,7 +9,7 @@ freshCheck.addEventListener("click", checkForSwitches);
 
 function printCard(x, movieData){
 img[x].src = movieData['movie_url'][x]
-img_div[x].style.visibility = "visible";
+img[x].style.visibility = "visible";
 
 dtTitle[x].textContent = movieData['movie_title'][x]
 
@@ -25,19 +25,18 @@ dtDirector[x].textContent = movieData['movie_director'][x]
 dtGenres[x].textContent = movieData['movie_genre'][x]
 dtBoxoffice[x].textContent = movieData['movie_boxoffice'][x]
 
-img_div[x].addEventListener("click", showBack.bind(this, x, {once:true}));}
+img[x].addEventListener("click", showBack.bind(this, x, {once:true}));}
 
 function showBack(x){
 cardButtons[x].style.visibility = "hidden";
-img_div[x].classList.add('blur')
+img[x].classList.add('blur')
 document.getElementsByClassName('db-movie-back')[x].style.visibility = "visible";
-
-img_div[x].addEventListener('mouseleave', showFront.bind(this, x), {once:true});
+img[x].addEventListener('mouseleave', showFront.bind(this, x), {once:true});
 }
 
 
 function showFront(x){
 cardButtons[x].style.visibility = "visible";
-img_div[x].classList.remove('blur')
+img[x].classList.remove('blur')
 document.getElementsByClassName('db-movie-back')[x].style.visibility = "hidden";
 }

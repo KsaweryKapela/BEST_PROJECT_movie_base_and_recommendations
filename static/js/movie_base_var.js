@@ -17,7 +17,6 @@ const ignore = [document.getElementsByClassName('ignore')[0], document.getElemen
 
 
 const img = document.getElementsByClassName("movie-base-image");
-const img_div = document.getElementsByClassName('filter');
 
 const rottenSwitch = document.getElementById("rotten-switch");
 const rottenText = document.getElementById("rotten-text");
