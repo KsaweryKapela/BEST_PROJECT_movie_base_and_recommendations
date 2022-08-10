@@ -6,45 +6,11 @@
 
 {{ super() }}
 
-
  <div class="search-input db-search-input" id="s-input">
-
-  {{ search_form.searched(type="text", placeholder="Search", id="db-search-input", class="search-query db-search-query", autocomplete="off") }}
+<i class="fa-solid fa-sort switch-icon-db" id="chose-search"></i>
+  {{ search_form.searched(type="text", placeholder="Enter title", id="db-search-input", class="search-query db-search-query", autocomplete="off") }}
 </div>
 
-
- <div class="database-switches">
-
-  <div class="database-div">
-   <label class="switch database-switch" id="hit-label">
-   <input type="checkbox" onclick="hitsPressed()" id="hit-switch"/>
-   <div id="hit-div"><p class="switch-text" id="hit-text">HITS</p></div>
-  </label>
-   </div>
-
-  <div class="database-div">
-   <label class="switch database-switch" id="rotten-label">
-   <input type="checkbox" onclick="rottenPressed()" id="rotten-switch"/>
-   <div id="rotten-div"><p class="switch-text" id="rotten-text">FRESH</p></div>
-  </label>
-   </div>
-
-    <div class="database-div">
-   <label class="switch database-switch" id="new-label">
-   <input type="checkbox" onclick="newPressed()" id="new-switch"/>
-   <div id="new-div"><p class="switch-text" id="new-text">NEW</p></div>
-  </label>
-   </div>
-
-        <div class="database-div">
-   <label class="switch database-switch" id="liked-label">
-   <input type="checkbox" onclick="likedPressed()" id="liked-switch"/>
-   <div id="liked-div"><p class="switch-text" id="liked-text">LIKED</p></div>
-  </label>
-   </div>
-
-
-  </div>
 
 
      <div class="database-check">

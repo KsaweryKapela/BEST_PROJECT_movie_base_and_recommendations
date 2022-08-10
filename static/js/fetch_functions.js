@@ -46,7 +46,7 @@ async function loadMovies(hits=null, rotten=null, liked=null, new_=null, certifi
         if (url_list['movie_url'][x] == undefined){
         cardButtons[x].style.visibility = "hidden";
         rightArrow.style.visibility = "hidden";
-        img_div[x].style.visibility = "hidden";
+        img[x].style.visibility = "hidden";
 
         }else{
         rightArrow.style.visibility = "visible";

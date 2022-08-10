@@ -2,9 +2,7 @@ movie_index = 0;
 
 loadMovies();
 
-disableSwitches();
-
-freshCheck.addEventListener("click", checkForSwitches);
+freshCheck.addEventListener("click", loadMovies);
 
 
 function printCard(x, movieData){

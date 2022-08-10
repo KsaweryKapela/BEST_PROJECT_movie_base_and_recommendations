@@ -10,12 +10,12 @@ iconsN = {
 
 function lowerIndex() {
     movie_index -= 4;
-    checkForSwitches()
+    loadMovies()
 };
 
 function addIndex() {
     movie_index += 4;
-    checkForSwitches()
+    loadMovies()
 };
 
 function placeArrows() {
