@@ -29,7 +29,6 @@ function placeArrows() {
 function recognizeIconState(active_icons_list) {
 
 
-
     for (index = 0; index < 4; index++) {
 
         icons.forEach((icon) => {

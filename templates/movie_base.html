@@ -6,10 +6,13 @@
 
 {{ super() }}
 
- <div class="search-input db-search-input" id="s-input">
-<i class="fa-solid fa-sort switch-icon-db" id="chose-search"></i>
-  {{ search_form.searched(type="text", placeholder="Enter title", id="db-search-input", class="search-query db-search-query", autocomplete="off") }}
-</div>
+<div class="search-bar-db">
+
+
+ <div class="db-search-input" id="s-input">
+     <i class="fa-solid fa-sort switch-icon-db" id="chose-search"></i>
+  {{ search_form.searched(type="text", placeholder="Enter title", id="db-search-input", class="db-search-query", autocomplete="off") }}
+</div></div>
 
 
 
@@ -18,27 +21,23 @@
   <label for="fresh-check">Best</label><br>
      </div>
 
-<i id="right-arrow" onclick="addIndex();" class="fas fa-angle-double-right right-arrow"></i>
-<i id="left-arrow" onclick="lowerIndex();"  class="left-arrow fas fa-angle-double-left"></i>
+
 
 
 
 
 <div class="movie-list">
 
+<i id="left-arrow" onclick="lowerIndex();"  class="left-arrow fas fa-angle-double-left"></i>
 
 {% for x in range(0,4) %}
 
  <div class="movie-list-item">
 
-          <img class="movie-base-image" src="">
+            <div class="db-card">   <img class="movie-base-image" src="">
 
-          <div class="back-icons" id="all-icons">
-              <i class="fas fa-heart add-movie add-movie-disabled" id="heart"></i>
-              <i class="fa-solid fa-bookmark watch-list watch-list-disabled" id="bookmark"></i>
-              <i class="fa-solid fa-thumbs-down dislike dislike-disabled" id="dislike"></i>
-              <i class="fa-regular fa-circle-xmark ignore ignore-disabled" id="ignore"></i>
-          </div>
+
+
 
       <div class="db-movie-back" id="card-back">
 
@@ -70,14 +69,23 @@
       <p class="db-boxoffice"></p>
 
 
-     </div>
+     </div></div>
 
+             <div class="back-icons" id="all-icons">
+              <i class="fas fa-heart add-movie add-movie-disabled" id="heart"></i>
+              <i class="fa-solid fa-bookmark watch-list watch-list-disabled" id="bookmark"></i>
+              <i class="fa-solid fa-thumbs-down dislike dislike-disabled" id="dislike"></i>
+              <i class="fa-solid fa-ban ignore ignore-disabled" id="ignore"></i>
+          </div>
 
  </div>
 
 {% endfor %}
 
+<i id="right-arrow" onclick="addIndex();" class="fas fa-angle-double-right right-arrow"></i>
 </div>
+
+
 
 <script src="{{ url_for('static', filename='js/movie_base_var.js') }}"></script>
 <script src="{{ url_for('static', filename='js/movie_base_search.js') }}"></script>
