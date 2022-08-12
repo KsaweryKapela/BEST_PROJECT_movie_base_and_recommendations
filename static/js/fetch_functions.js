@@ -32,8 +32,7 @@ async function fetchMovies(hits, rotten, liked, new_, certified) {
 
 
 async function loadMovies(hits=null, rotten=null, liked=null, new_=null, certified=null) {
-    if (freshCheck.checked) {
-    certified = 'True'};
+
 
     placeArrows();
 

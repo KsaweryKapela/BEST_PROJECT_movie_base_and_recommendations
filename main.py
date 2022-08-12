@@ -377,7 +377,8 @@ def search_films():
 
 @app.route('/moviebase', methods=['GET', 'POST'])
 def movie_base():
-    return render_template('movie_base.html', hide="True")
+    genres = [genre.name for genre in Genres.query.all()]
+    return render_template('movie_base.html', genres=genres)
 
 
 @app.route('/fetch_movies', methods=['GET'])

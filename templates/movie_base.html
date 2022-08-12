@@ -15,15 +15,63 @@
 </div></div>
 
 
+<div class="sort-buttons">
 
-     <div class="database-check">
-     <input type="checkbox" id="fresh-check">
-  <label for="fresh-check">Best</label><br>
-     </div>
+<div class="order-by order">
+  <span>Order by</span>
+  <div class="order-by-content">
+      <p class="order-item order-active" id="critics_max"> &nbsp;Critics reviews +</i></p>
+      <p class="order-item order-active" id="critics_min"> &nbsp;Critics reviews -</i></p>
+      <p class="order-item order-active" id="boxoffice_max"> &nbsp;US Boxoffice +</i></p>
+      <p class="order-item order-active" id="boxoffice_min"> &nbsp;US Boxoffice -</i></p>
+      <p class="order-item order-active" id="date_max"> &nbsp;Release date +</i></p>
+         <p class="order-item order-active last-item" id="date_min"> &nbsp;Release date -</p>
+
+
+  </div>
+</div>
+
+    <div class="order-by genres">
+  <span>Genres</span>
+  <div class="order-by-content">
+      {% for genre in genres %}
+      <p class="order-item order-active"> &nbsp;{{ genre }}</p>
+      {% endfor %}
+  </div>
+</div>
+
+            <div class="order-by rating">
+  <span>Rating</span>
+  <div class="order-by-content">
+            <p class="order-item order-active"> &nbsp;G</p>
+                  <p class="order-item order-active"> &nbsp;PG</p>
+                  <p class="order-item order-active"> &nbsp;PG-13</p>
+            <p class="order-item order-active last-item"> &nbsp;R</p>
+  </div>
+</div>
+
+
+    <div class="order-by critics">
+  <span>Critics</span>
+  <div class="order-by-content">
+      <p class="order-item order-active"> &nbsp;Loved it</p>
+            <p class="order-item order-active"> &nbsp;Liked it</p>
+            <p class="order-item order-active last-item"> &nbsp;Hated it</p>
+  </div>
+</div>
+
+        <div class="order-by audience">
+  <span>Audience</span>
+  <div class="order-by-content">
+            <p class="order-item order-active"> &nbsp;Liked it</p>
+            <p class="order-item order-active last-item"> &nbsp;Hated it</p>
+  </div>
+</div>
 
 
 
 
+</div>
 
 
 <div class="movie-list">
@@ -86,10 +134,11 @@
 </div>
 
 
-
+<script src="{{ url_for('static', filename='js/movie_base_fetch_movies.js') }}"></script>
 <script src="{{ url_for('static', filename='js/movie_base_var.js') }}"></script>
 <script src="{{ url_for('static', filename='js/movie_base_search.js') }}"></script>
 <script src="{{ url_for('static', filename='js/movie_base_switches.js') }}"></script>
 <script src="{{ url_for('static', filename='js/movie_base_buttons.js') }}"></script>
 <script src="{{ url_for('static', filename='js/movie_base.js') }}"></script>
+
 {% endblock %}

@@ -1,6 +1,3 @@
-*, *:before, *:after {
-	 box-sizing: border-box;
-}
  html {
 	 line-height: 1.5;
 	 font-weight: 700;
@@ -9,12 +6,10 @@
 	 padding-top: 3%;
 	 padding-left: 5%;
 	 padding-right: 5%;
-	 user-select: none;
 }
 
  body {
 	 background-color: #ecf0f9;
-	 background-attachment: fixed;
 }
 
 /* Heading */
@@ -158,7 +153,6 @@ padding-right: 10%;
 
 .autocom-box li:hover {
 background-color: #ecf0f9;
-width: 200%;
 }
 
 /* Search Icon */
@@ -343,6 +337,122 @@ cursor: pointer;
 
 
 /* MovieBase */
+
+/* Filters */
+
+.sort-buttons {
+position:absolute;
+top: 10vw;
+left: 0;
+right: 0;
+margin-left: auto;
+margin-right: auto;
+text-align: center;
+}
+
+.order-by{
+cursor: pointer;
+display: inline-block;
+padding-top: 0.2vw;
+ text-align: center;
+position: relative;
+background-color: white;
+width: 12vw;
+height: 2vw;
+border-radius: 10%;
+font-weight: 800;
+font-size: 1vw;
+text-transform: uppercase;
+box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+transition: background-color 0.1s;
+}
+
+
+.order-by:hover {
+}
+
+.order-by-content {
+max-height: 20vw;
+font-size: 0.8vw;
+box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+position: absolute;
+z-index: 100;
+background: white;
+width: inherit;
+overflow-y: auto;
+display: none;
+padding: .25vw .25vw;
+text-align: left;
+-webkit-border-bottom-right-radius: 20px;
+-webkit-border-bottom-left-radius: 20px;
+-moz-border-radius-bottomright: 20px;
+-moz-border-radius-bottomleft: 20px;
+border-bottom-right-radius: 20px;
+border-bottom-left-radius: 20px;
+}
+
+.last-item {
+
+-webkit-border-bottom-right-radius: 20px;
+-webkit-border-bottom-left-radius: 20px;
+-moz-border-radius-bottomright: 20px;
+-moz-border-radius-bottomleft: 20px;
+border-bottom-right-radius: 20px;
+border-bottom-left-radius: 20px;
+}
+
+.last-item-with-a-twist {
+-webkit-border-bottom-left-radius: 20px;
+-moz-border-radius-bottomleft: 20px;
+border-bottom-left-radius: 20px;
+}
+.dropdown-icon {
+font-size: 1.5vw;
+float: right;
+padding-right: .3vw;
+}
+
+
+.enabled {
+  display: block;
+}
+
+
+.order-item{
+font-weight: 800;
+padding-top: 0.8vw;
+padding-bottom: 2vw;
+height: 2vw;
+margin-bottom: 0;
+}
+
+
+.order-disabled {
+background-color: #97BBDA;
+}
+
+
+.order-active {
+transition: background-color 0.1s;
+}
+
+.order-active:hover {
+cursor: pointer;
+background-color: #337ab7;
+}
+
+.rating{
+width: 7.5vw;}
+
+.critics{
+width: 9vw;}
+
+.order {
+width: 11vw;}
+
+.audience {
+width: 10vw;}
+/* Movie list */
 
 .movie-list {
 
@@ -582,7 +692,7 @@ left:0.5vw;}
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  top: 4vw;
+  top: 5.5vw;
   width: 20vw;
 }
 
@@ -647,9 +757,7 @@ height: 10%;
 width: 10%;
 position: relative;
 top: 40%;
-
 }
-
 
 .recommend-icon {
 font-size: 2.5rem;

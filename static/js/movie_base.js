@@ -2,7 +2,6 @@ movie_index = 0;
 
 loadMovies();
 
-freshCheck.addEventListener("click", loadMovies);
 
 
 function printCard(x, movieData){
@@ -46,7 +45,6 @@ document.getElementsByClassName('db-movie-back')[x].style.visibility = "hidden";
 
 function showDisplay(){
 cardButtons[this].classList.add('visible');
-console.log(cardButtons[this].classList);
 }
 
 function deleteDisplay(){
