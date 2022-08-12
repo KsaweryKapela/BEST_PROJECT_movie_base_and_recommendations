@@ -1,4 +1,6 @@
 movie_index = 0;
+x = choseOrder.bind(orderByElements[0]);
+x();
 
 loadMovies();
 

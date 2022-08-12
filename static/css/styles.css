@@ -48,7 +48,7 @@ height: 100%;
 position: relative;
 float:right;
 color: #337ab7;
-
+z-index: 100;
 }
 
 

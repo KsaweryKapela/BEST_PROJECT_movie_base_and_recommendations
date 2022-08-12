@@ -36,4 +36,4 @@ else if(clicks==4){
 inputBox.placeholder = 'Enter actor name';
 search = 'cast';
 clicks = 0}
-checkForSwitches()};
+loadMovies()}

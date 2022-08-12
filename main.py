@@ -8,7 +8,6 @@ from sqlalchemy import or_, cast, Integer, and_
 from forms import *
 from flask_login import UserMixin
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-
 from functions import check_for_arrow
 
 app = Flask(__name__)
@@ -401,85 +400,95 @@ def fetch_users():
 
 @app.route('/fetch_moviebase', methods=['GET'])
 def fetch_database():
-    try:
-        searched_data = session['searched_data']
-        session['searched_data'] = ''
-        print(searched_data)
-    except KeyError:
-        session['searched_data'] = ''
-        searched_data = session['searched_data']
+    from moviebase_filters import MoviebaseFilters
 
-    if searched_data == '':
-        key = request.args.get('key')
-    else:
-        key = searched_data
+    movie_filter = MoviebaseFilters()
+    movies = movie_filter.return_movies()
 
-    search = request.args.get('search')
-    hits = request.args.get('hits')
-    value = int(request.args.get('index'))
-    rotten = request.args.get('rotten')
-    liked = request.args.get('liked')
-    new = request.args.get('new')
-    certified = request.args.get('certified')
+    key = ''
+    # key = movie_filter.find_key()
 
-    if search == 'title':
-        movies = MoviesDatabase.query.filter(or_(
-            MoviesDatabase.title.startswith(key),
-            MoviesDatabase.title.contains(f' {key}')))
-
-    elif search == 'collection':
-        movies = MoviesDatabase.query.filter(or_(
-            MoviesDatabase.collection.startswith(key),
-            MoviesDatabase.collection.contains(f' {key}')))
-
-    elif search == 'director':
-        movies = MoviesDatabase.query.filter(or_(
-            MoviesDatabase.director.startswith(key),
-            MoviesDatabase.director.contains(f' {key}')))
-
-    elif search == 'cast':
-        movies = MoviesDatabase.query.filter(or_(
-            MoviesDatabase.cast.startswith(key),
-            MoviesDatabase.cast.contains(key)))
-
-    elif search == 'studio':
-        movies = MoviesDatabase.query.filter(or_(
-            MoviesDatabase.studio.startswith(key),
-            MoviesDatabase.studio.contains(f' {key}')))
-
-    if certified == 'True':
-        movies = movies.filter(MoviesDatabase.certified == 'certified-fresh')
-
-    if rotten == 'False':
-        movies = movies.filter(MoviesDatabase.tomatometer != '').order_by(
-            cast(MoviesDatabase.computed_critic_score, Integer))
-
-    elif hits == 'True':
-        movies = movies.filter(MoviesDatabase.boxoffice != '0').order_by(cast(MoviesDatabase.boxoffice, Integer).
-                                                                         desc())
-    elif hits == 'False':
-        movies = movies.filter(MoviesDatabase.boxoffice != '0').order_by(cast(MoviesDatabase.boxoffice, Integer))
-
-    elif liked == 'True':
-        movies = movies.order_by(cast(MoviesDatabase.computed_audience_score, Integer).
-                                 desc())
-    elif liked == 'False':
-        movies = movies.filter(MoviesDatabase.user_score != '').order_by(
-            cast(MoviesDatabase.computed_audience_score, Integer))
-
-    elif new == 'True':
-        movies = movies.order_by(MoviesDatabase.release_date.desc())
-
-    elif new == 'False':
-        movies = movies.order_by(MoviesDatabase.release_date)
-
-    else:
-        movies = movies.filter(MoviesDatabase.tomatometer != '').order_by(
-            cast(MoviesDatabase.computed_critic_score, Integer).
-                desc())
-
-    movies = movies[value:value + 5]
-
+    # try:
+    #     searched_data = session['searched_data']
+    #     session['searched_data'] = ''
+    # except KeyError:
+    #     session['searched_data'] = ''
+    #     searched_data = session['searched_data']
+    #
+    # if searched_data == '':
+    #     key = request.args.get('key')
+    # else:
+    #     key = searched_data
+    #
+    # search = request.args.get('search')
+    # value = int(request.args.get('index'))
+    # order = request.args.get('order')
+    # genres = request.args.get('genres')
+    # rating = request.args.get('rating')
+    # critics = request.args.get('critics')
+    # audience = request.args.get('audience')
+    #
+    # movies = MoviesDatabase.query
+    # movies = movies[value:value + 5]
+    #
+    # if search == 'title':
+    #     movies = MoviesDatabase.query.filter(or_(
+    #         MoviesDatabase.title.startswith(key),
+    #         MoviesDatabase.title.contains(f' {key}')))
+    #
+    # elif search == 'collection':
+    #     movies = MoviesDatabase.query.filter(or_(
+    #         MoviesDatabase.collection.startswith(key),
+    #         MoviesDatabase.collection.contains(f' {key}')))
+    #
+    # elif search == 'director':
+    #     movies = MoviesDatabase.query.filter(or_(
+    #         MoviesDatabase.director.startswith(key),
+    #         MoviesDatabase.director.contains(f' {key}')))
+    #
+    # elif search == 'cast':
+    #     movies = MoviesDatabase.query.filter(or_(
+    #         MoviesDatabase.cast.startswith(key),
+    #         MoviesDatabase.cast.contains(key)))
+    #
+    # elif search == 'studio':
+    #     movies = MoviesDatabase.query.filter(or_(
+    #         MoviesDatabase.studio.startswith(key),
+    #         MoviesDatabase.studio.contains(f' {key}')))
+    #
+    # if certified == 'True':
+    #     movies = movies.filter(MoviesDatabase.certified == 'certified-fresh')
+    #
+    # if rotten == 'False':
+    #     movies = movies.filter(MoviesDatabase.tomatometer != '').order_by(
+    #         cast(MoviesDatabase.computed_critic_score, Integer))
+    #
+    # elif hits == 'True':
+    #     movies = movies.filter(MoviesDatabase.boxoffice != '0').order_by(cast(MoviesDatabase.boxoffice, Integer).
+    #                                                                      desc())
+    # elif hits == 'False':
+    #     movies = movies.filter(MoviesDatabase.boxoffice != '0').order_by(cast(MoviesDatabase.boxoffice, Integer))
+    #
+    # elif liked == 'True':
+    #     movies = movies.order_by(cast(MoviesDatabase.computed_audience_score, Integer).
+    #                              desc())
+    # elif liked == 'False':
+    #     movies = movies.filter(MoviesDatabase.user_score != '').order_by(
+    #         cast(MoviesDatabase.computed_audience_score, Integer))
+    #
+    # elif new == 'True':
+    #     movies = movies.order_by(MoviesDatabase.release_date.desc())
+    #
+    # elif new == 'False':
+    #     movies = movies.order_by(MoviesDatabase.release_date)
+    #
+    # else:
+    #     movies = movies.filter(MoviesDatabase.tomatometer != '').order_by(
+    #         cast(MoviesDatabase.computed_critic_score, Integer).
+    #             desc())
+    #
+    # movies = movies[value:value + 5]
+    #
     index_of_favorite = []
     index_of_bookmarks = []
     index_of_dislikes = []

@@ -49,15 +49,25 @@ async function loadMovies() {
 
 async function fetchMovieBase() {
     response = await fetch('fetch_moviebase' + '?' + new URLSearchParams(
-    {'index': movie_index,
-     'key': inputBox.value,
+    {'search': search,
+    'index': movie_index,
     'order': order,
 
     'genres': genres,
     'rating': rating,
     'critics': critics,
     'audience': audience,
+    'key': inputBox.value,
+    }));
+    const raw_data = await response.json();
+    return raw_data;
+}
 
+async function fetchData(url, data, command, command2='cmd') {
+    response = await fetch(url + '?' + new URLSearchParams(
+    {'value': data,
+    'command': command,
+    'command2': command2
     }));
     const raw_data = await response.json();
     return raw_data;

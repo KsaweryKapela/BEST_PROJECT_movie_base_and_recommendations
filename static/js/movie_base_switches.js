@@ -37,8 +37,6 @@ for (let item of genresElements) {
 item.addEventListener('click', addFilter)
 };
 
-
-
 for (let item of ratingElements) {
 item.addEventListener('click', addFilter)
 };
@@ -62,6 +60,7 @@ thisListName = this.parentNode.parentNode.classList[1];
 
 
 saveFilter(this.textContent.substring(2), this.classList[1], choseCorrectList(thisListName));
+loadMovies();
 }
 
 
@@ -70,9 +69,7 @@ if (itemClass == 'order-disabled'){
 listName.push(content)}
 else if (itemClass == 'order-active'){
 listName.splice(genres.indexOf(content), 1);
-}
-console.log(listName);
-}
+}}
 
 
 function choseCorrectList(listName) {
