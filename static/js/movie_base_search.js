@@ -5,7 +5,7 @@ search = 'title';
 clicks = 1;
 
 inputBox.onkeyup = (e)=>{
-    movie_index = 0;
+    movieIndex = 0;
     userData = e.target.value;
     loadMovies();}
 
@@ -13,7 +13,7 @@ choseSearch.addEventListener('click', swapSearch)
 
 function swapSearch() {
 inputBox.value = '';
-movie_index = 0;
+movieIndex = 0;
 loadMovies();
 
 if(clicks==0){

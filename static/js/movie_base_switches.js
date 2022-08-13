@@ -1,5 +1,5 @@
-var dropdowns = document.getElementsByClassName('order-by');
-
+dropdowns = document.getElementsByClassName('order-by');
+var dropdownsArray = [].slice.call(dropdowns);
 orderByElements = dropdowns[0].getElementsByClassName('order-item');
 genresElements = dropdowns[1].getElementsByClassName('order-item');
 ratingElements = dropdowns[2].getElementsByClassName('order-item');
@@ -7,6 +7,7 @@ criticsElements = dropdowns[3].getElementsByClassName('order-item');
 audienceElements = dropdowns[4].getElementsByClassName('order-item');
 
 
+//making dropdowns work
 
 for (let dropdown of dropdowns) {
     dropdown.addEventListener('click', dropTheBar);
@@ -14,6 +15,7 @@ for (let dropdown of dropdowns) {
 }
 
 function dropTheBar(){
+
 this.getElementsByClassName('order-by-content')[0].classList.add('enabled');
 }
 
@@ -21,63 +23,50 @@ function hideTheBar(){
 this.getElementsByClassName('order-by-content')[0].classList.remove('enabled');
 }
 
-for (let item of orderByElements) {
-item.addEventListener('click', choseOrder)
+//making all one chose functions work
+
+for (let item of [...orderByElements, ...ratingElements, ...criticsElements, ...audienceElements]) {
+item.addEventListener('click', selectItem)
 };
 
-function choseOrder(){
-for (item of orderByElements) {
+function selectItem(){
+listOfSiblings = this.parentElement.parentElement.getElementsByClassName('order-item');
+dropdownName = this.parentElement.parentElement.classList[1];
+if (this.classList.contains('order-disabled') && dropdownName != 'order') {
+this.classList.replace('order-disabled', 'order-active')
+choseCorrectString(dropdownName, '')
+}else{
+for (item of listOfSiblings) {
 item.classList.replace('order-disabled', 'order-active')}
 this.classList.replace('order-active', 'order-disabled');
-order = this.id
+choseCorrectString(dropdownName, this.id);}
+movieIndex = 0;
 loadMovies();
 }
 
+// making genres work
 for (let item of genresElements) {
-item.addEventListener('click', addFilter)
+item.addEventListener('click', addGenreFilter)
 };
 
-for (let item of ratingElements) {
-item.addEventListener('click', addFilter)
-};
-
-for (let item of criticsElements) {
-item.addEventListener('click', addFilter)
-};
-
-for (let item of audienceElements) {
-item.addEventListener('click', addFilter)
-};
-
-function addFilter(){
+function addGenreFilter(){
+genreName = this.textContent.substring(2)
 if (this.classList.contains('order-active')){
 this.classList.replace('order-active', 'order-disabled');
-
-}else if(this.classList.contains('order-disabled')){
-this.classList.replace('order-disabled', 'order-active')};
-
-thisListName = this.parentNode.parentNode.classList[1];
-
-
-saveFilter(this.textContent.substring(2), this.classList[1], choseCorrectList(thisListName));
+genres.push(genreName);
+}else{
+this.classList.replace('order-disabled', 'order-active')
+genres.splice(genres.indexOf(genreName), 1)}
+movieIndex = 0;
 loadMovies();
 }
 
-
-function saveFilter(content, itemClass, listName){
-if (itemClass == 'order-disabled'){
-listName.push(content)}
-else if (itemClass == 'order-active'){
-listName.splice(genres.indexOf(content), 1);
-}}
-
-
-function choseCorrectList(listName) {
- if (listName == 'genres'){
-return genres
-}else if (listName == 'rating'){
-return rating
-}else if (listName == 'critics'){
-return critics
-}else if (listName == 'audience'){
-return audience}}
+function choseCorrectString(className, data) {
+ if (className == 'order'){
+order = data;
+}else if (className == 'rating'){
+rating = data;
+}else if (className == 'critics'){
+critics = data;
+}else if (className == 'audience'){
+audience = data}}

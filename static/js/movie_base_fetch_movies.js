@@ -1,25 +1,8 @@
-//async function fetchMovies(hits, rotten, liked, new_, certified) {
-//    response = await fetch('fetch_moviebase' + '?' + new URLSearchParams(
-//    {'index': movie_index,
-//    'hits': hits,
-//    'key': userData,
-//    'rotten': rotten,
-//    'liked': liked,
-//    'new': new_,
-//    'certified': certified,
-//    'search': search,
-//    'key': inputBox.value
-//    }));
-//    const raw_data = await response.json();
-//    return raw_data;
-//}
-//
-
-order = ''
 genres = []
-rating = []
-critics = []
-audience = []
+order = ''
+rating = ''
+critics = ''
+audience = ''
 
 
 async function loadMovies() {
@@ -50,7 +33,7 @@ async function loadMovies() {
 async function fetchMovieBase() {
     response = await fetch('fetch_moviebase' + '?' + new URLSearchParams(
     {'search': search,
-    'index': movie_index,
+    'index': movieIndex,
     'order': order,
 
     'genres': genres,

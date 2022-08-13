@@ -1,5 +1,5 @@
-movie_index = 0;
-x = choseOrder.bind(orderByElements[0]);
+movieIndex = 0;
+x = selectItem.bind(orderByElements[0]);
 x();
 
 loadMovies();

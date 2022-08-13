@@ -9,17 +9,17 @@ iconsN = {
 }
 
 function lowerIndex() {
-    movie_index -= 4;
+    movieIndex -= 4;
     loadMovies()
 };
 
 function addIndex() {
-    movie_index += 4;
+    movieIndex += 4;
     loadMovies()
 };
 
 function placeArrows() {
-    if (movie_index == 0) {
+    if (movieIndex == 0) {
         leftArrow.style.visibility = "hidden";
     } else {
         leftArrow.style.visibility = "visible"
