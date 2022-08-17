@@ -7,10 +7,10 @@
 
 <div class="wall-buttons">
 
-<button class='wall-button button-favorites' onclick="location.href='{{ url_for('favorites', index='1') }}'"  type="button">Favorites</button>
-<button class='wall-button button-watch-list' onclick="location.href='{{ url_for('watch_list', index='1') }}'" type="button">Watch list</button>
-<button class='wall-button button-disliked' onclick="location.href='{{ url_for('disliked', index='1') }}'" type="button">Disliked</button>
-<button class='wall-button button-ignored' onclick="location.href='{{ url_for('ignored', index='1') }}'" type="button">Ignored</button>
+<button class='wall-button button-favorites' onclick="location.href='{{ url_for('favorites', username=username, index='1') }}'"  type="button">Favorites</button>
+<button class='wall-button button-watch-list' onclick="location.href='{{ url_for('watch_list', username=username, index='1') }}'" type="button">Watch list</button>
+<button class='wall-button button-disliked' onclick="location.href='{{ url_for('disliked', username=username, index='1') }}'" type="button">Disliked</button>
+<button class='wall-button button-ignored' onclick="location.href='{{ url_for('ignored', username=username, index='1') }}'" type="button">Ignored</button>
 </div>
 
 
@@ -38,7 +38,7 @@
 
     <div class="wall-list-item-{{x}} wall-list-items">
 
-      <div class="wall-list-img">
+      <div class="wall-list-img" id="{{ movies[x].movies_database.id }}">
         <img class="wall-movie-base-image" src="{{ movies[x].movies_database.img_url }}">
       </div>
         <div class="wall-icons">

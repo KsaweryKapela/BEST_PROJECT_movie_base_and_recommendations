@@ -1,7 +1,10 @@
 var thrashCan = [].slice.call(document.getElementsByClassName('thrashcan'));
 thrashCan.forEach(element => element.addEventListener('click', deleteMovie));
 
-
+var movie_images = [].slice.call(document.getElementsByClassName('wall-list-img'));
+movie_images.forEach(element => element.addEventListener('click', () => {
+movie_id = movie_images[movie_images.indexOf(element)].id;
+window.open('/' + movie_id).focus();}))
 
 if (document.getElementById('right-arrow-wall')){
 const rightArrowWall = document.getElementById('right-arrow-wall')

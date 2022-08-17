@@ -30,7 +30,6 @@ class Users(db.Model, UserMixin):
     movies = db.relationship('UsersFilms', backref='users')
 
 
-#many to many
 class UsersFilms(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
@@ -88,10 +87,9 @@ movie_actors = db.Table('movie_actors',
                         db.Column('actor_id', db.Integer, db.ForeignKey('actors.id')),
                         db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
 
-
 user_movie_actors = db.Table('user_movie_actors',
-                        db.Column('actor_id', db.Integer, db.ForeignKey('actors.id')),
-                        db.Column('user_movie_id', db.Integer, db.ForeignKey('users_films.id')))
+                             db.Column('actor_id', db.Integer, db.ForeignKey('actors.id')),
+                             db.Column('user_movie_id', db.Integer, db.ForeignKey('users_films.id')))
 
 
 class Actors(db.Model):
@@ -109,8 +107,8 @@ movie_genres = db.Table('movie_genres',
                         db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
 
 user_movie_genres = db.Table('user_movie_genres',
-                        db.Column('genre_id', db.Integer, db.ForeignKey('genres.id')),
-                        db.Column('movie_id', db.Integer, db.ForeignKey('users_films.id')))
+                             db.Column('genre_id', db.Integer, db.ForeignKey('genres.id')),
+                             db.Column('movie_id', db.Integer, db.ForeignKey('users_films.id')))
 
 
 class Genres(db.Model):
@@ -121,8 +119,8 @@ class Genres(db.Model):
 
 
 movie_text = db.Table('movie_text',
-                        db.Column('text_id', db.Integer, db.ForeignKey('text.id')),
-                        db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
+                      db.Column('text_id', db.Integer, db.ForeignKey('text.id')),
+                      db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
 
 
 class Text(db.Model):
@@ -132,8 +130,8 @@ class Text(db.Model):
 
 
 movie_directors = db.Table('movie_directors',
-                        db.Column('director_id', db.Integer, db.ForeignKey('directors.id')),
-                        db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
+                           db.Column('director_id', db.Integer, db.ForeignKey('directors.id')),
+                           db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
 
 
 class Directors(db.Model):
@@ -143,8 +141,8 @@ class Directors(db.Model):
 
 
 movie_writers = db.Table('movie_writers',
-                        db.Column('writer_id', db.Integer, db.ForeignKey('writers.id')),
-                        db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
+                         db.Column('writer_id', db.Integer, db.ForeignKey('writers.id')),
+                         db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
 
 
 class Writers(db.Model):
@@ -156,12 +154,11 @@ class Writers(db.Model):
 db.create_all()
 
 
-
-
 @app.context_processor
 def header():
     form = SearchForm()
-    return dict(search_form=form)
+    username = current_user.username
+    return dict(search_form=form, username=username)
 
 
 @login_manager.user_loader
@@ -172,13 +169,13 @@ def load_user(user_id):
 @app.route("/", methods=['GET', 'POST'])
 def home():
     if current_user.is_authenticated:
-        return redirect('favorites/1')
+        return redirect(f'{current_user.username}/favorites/1')
 
     return render_template("index.html")
 
 
-@app.route('/favorites/<int:index>', methods=['GET', 'POST'])
-def favorites(index):
+@app.route('/<username>/favorites/<int:index>', methods=['GET', 'POST'])
+def favorites(username, index):
     movies = UsersFilms.query.filter_by(user_id=current_user.id).filter_by(tag='heart')[index * 7 - 7:index * 7 + 1]
     if index != 1 and movies == []:
         return redirect(f'/favorites/{index - 1}')
@@ -189,8 +186,8 @@ def favorites(index):
     return render_template("index.html", movies=movies, right_arrow=check_for_arrow(movies))
 
 
-@app.route('/watch-list/<int:index>', methods=['GET', 'POST'])
-def watch_list(index):
+@app.route('/<username>/watch-list/<int:index>', methods=['GET', 'POST'])
+def watch_list(username, index):
     movies = UsersFilms.query.filter_by(user_id=current_user.id).filter_by(tag='bookmark')[index * 7 - 7:index * 7 + 1]
 
     if index != 1 and movies == []:
@@ -202,8 +199,8 @@ def watch_list(index):
     return render_template("index.html", movies=movies, right_arrow=check_for_arrow(movies))
 
 
-@app.route('/disliked/<int:index>', methods=['GET', 'POST'])
-def disliked(index):
+@app.route('/<username>/disliked/<int:index>', methods=['GET', 'POST'])
+def disliked(username, index):
     movies = UsersFilms.query.filter_by(user_id=current_user.id).filter_by(tag='dislike')[index * 7 - 7:index * 7 + 1]
 
     if index != 1 and movies == []:
@@ -215,8 +212,8 @@ def disliked(index):
     return render_template("index.html", movies=movies, right_arrow=check_for_arrow(movies))
 
 
-@app.route('/ignored/<int:index>', methods=['GET', 'POST'])
-def ignored(index):
+@app.route('/<username>/ignored/<int:index>', methods=['GET', 'POST'])
+def ignored(username, index):
     movies = UsersFilms.query.filter_by(user_id=current_user.id).filter_by(tag='ignore')[index * 7 - 7:index * 7 + 1]
     if index != 1 and movies == []:
         return redirect(f'/favorites/{index - 1}')
@@ -226,22 +223,34 @@ def ignored(index):
     return render_template("index.html", movies=movies, right_arrow=check_for_arrow(movies))
 
 
+@app.route('/<movie_id>')
+def movie_page(movie_id):
+    movie = MoviesDatabase.query.get(movie_id)
+
+    movie_cast = [actor.name for actor in movie.actors]
+    movie_studio = movie.studio.split(', ')[0] + ' | ' if movie.studio != '' else ''
+
+    movie_dict = {'movie_url': movie.img_url,
+                  'movie_title': movie.title.replace('--', '-'),
+                  'movie_date_runtime_PG': movie.release_date[:4] + ' | ' + movie.runtine + ' | ' + movie.PG,
+                  'movie_genre': movie.genre.replace(', ', ' | '),
+                  'movie_description': movie.description,
+                  'movie_director': 'by ' + movie.director.replace(', ', ' | '),
+                  'movie_writer': 'Screenplay: ' + movie.writer.replace(', ', ' | '),
+                  'movie_cast': 'main cast: ' + ' '.join(str(actor) + ' | ' for actor in movie_cast)[:-2],
+                  'movie_producer_boxoffice': movie_studio +
+                                              'US boxoffice: $' + numerize.numerize(int(movie.boxoffice)) if movie.boxoffice != '0' else '',
+                  'movie_tomatometer': movie.tomatometer + '%' if movie.tomatometer != '' else '-',
+                  'movie_audience': movie.user_score + '%' if movie.user_score != '' else '-'
+                  }
+    return render_template("movie_page.html", movie_dict=movie_dict)
+
+
 @app.route('/waypoint')
 def way_point():
     correct_url = session['redirect_link']
     session['redirect_link'] = None
     return redirect(correct_url)
-
-
-@app.route('/wall/<username>', methods=['GET', 'POST'])
-def wall(username):
-    if current_user.is_authenticated and username == current_user.username:
-        return redirect('/')
-
-    user = Users.query.filter_by(username=username).first()
-    movies = UsersFilms.query.filter_by(user_id=user.id).all()
-
-    return render_template("wall.html", movies=movies, username=username)
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -491,14 +500,30 @@ def recommendation_page():
 
 @app.route('/fetch_recommend', methods=['GET', 'POST'])
 def fetch_recommend():
-
     from recomendations import MovieRecommendations
     recommend = MovieRecommendations()
     movie_id = recommend.update_recommendations(current_user.id)
     session['recommendations_movie_id'] = movie_id
+
     movie = MoviesDatabase.query.get(movie_id)
 
-    return {'movie_url': movie.img_url}
+    movie_cast = [actor.name for actor in movie.actors]
+
+    return {'movie_url': movie.img_url,
+            'movie_title': movie.title.replace('--', '-'),
+            'movie_date': movie.release_date[:4],
+            'movie_genre': movie.genre.replace(', ', ' | '),
+            'movie_description': movie.description,
+            'movie_director': movie.director.replace(', ', ' | '),
+            'movie_writer': movie.writer.replace(', ', ' | '),
+            'movie_cast': ' '.join(str(actor) + ' | ' for actor in movie_cast),
+            'movie_studio': movie.studio.split(', ') if movie.studio != '' else '-',
+            'movie_boxoffice': numerize.numerize(int(movie.boxoffice)) if movie.boxoffice != '0' else '-',
+            'movie_runtime': movie.runtine,
+            'movie_tomatometer': movie.tomatometer + '%' if movie.tomatometer != '' else '-',
+            'movie_audience': movie.user_score + '%' if movie.user_score != '' else '-',
+            'movie_pg': movie.PG,
+            }
 
 
 if __name__ == "__main__":

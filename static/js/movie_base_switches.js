@@ -7,7 +7,7 @@ criticsElements = dropdowns[3].getElementsByClassName('order-item');
 audienceElements = dropdowns[4].getElementsByClassName('order-item');
 
 
-//making dropdowns work
+//making dropdowns drop and hide
 
 for (let dropdown of dropdowns) {
     dropdown.addEventListener('click', dropTheBar);
@@ -32,6 +32,7 @@ item.addEventListener('click', selectItem)
 function selectItem(){
 listOfSiblings = this.parentElement.parentElement.getElementsByClassName('order-item');
 dropdownName = this.parentElement.parentElement.classList[1];
+
 if (this.classList.contains('order-disabled') && dropdownName != 'order') {
 this.classList.replace('order-disabled', 'order-active')
 choseCorrectString(dropdownName, '')
@@ -50,7 +51,7 @@ item.addEventListener('click', addGenreFilter)
 };
 
 function addGenreFilter(){
-genreName = this.textContent.substring(2)
+genreName = this.textContent.substring(2);
 if (this.classList.contains('order-active')){
 this.classList.replace('order-active', 'order-disabled');
 genres.push(genreName);
@@ -70,3 +71,4 @@ rating = data;
 critics = data;
 }else if (className == 'audience'){
 audience = data}}
+

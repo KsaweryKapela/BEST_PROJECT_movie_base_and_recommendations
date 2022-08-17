@@ -1,23 +1,49 @@
 {% include "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-     <div class="recommendation-div">
+<div class="movie-info-div">
+
+<p class="rm-movie-title"></p>
+      <p class="rm-director"></p>
+
+      <div class="rm-tomatometer-div"><i class="fa-solid fa-graduation-cap rm-icon"></i><p class="rm-tomatometer"></p></div>
+
+      <div class="rm-audience-div"><i class="fa-solid fa-user rm-icon"></i><p class="rm-audience"></p></div>
 
 
-                    <div class="back-icons-recommend-1">
-              <i class="fas fa-heart add-movie-recommend recommend-icon" id="recommend-heart"></i>
-              <i class="fa-solid fa-bookmark watch-list-recommend recommend-icon" id="recommend-bookmark" ></i>
-                       </div>
-
-              <img class="movie-base-image recommend-image" id="recommend-image"
-          src="">
-
-         <div class="back-icons-recommend-2">
-              <i class="fa-solid fa-thumbs-down dislike-recommend recommend-icon" id="recommend-dislike"></i>
-              <i class="fa-regular fa-circle-xmark ignore-recommend recommend-icon" id="recommend-ignore"></i>
-          </div>
-
-     </div>
+       <p class="rm-date-runtime-PG"></p>
+       <p class="rm-genres"></p>
+    <p class="rm-writer"></p>
 
 
+      <p class="rm-description"></p>
+    <p class="rm-cast"></p>
+      <p class="rm-studio-boxoffice"></p>
+
+</div>
+<div class="recommendation-div">
+
+     <img class="recommend-image" id="recommend-image" src="">
+
+    <div class="hoverspace-1">
+    <div class="back-icons-recommend-1">
+    <i class="fa-solid fa-bookmark watch-list-recommend recommend-icon" id="recommend-bookmark"></i>
+            <i class="fa-solid fa-ban ignore-recommend recommend-icon" id="recommend-ignore"></i>
+</div>
+  </div>
+        <p class="missed-text">MISSED IT</p>
+
+
+
+
+    <div class="hoverspace-2">
+    <div class="back-icons-recommend-2">
+            <i class="fas fa-heart add-movie-recommend recommend-icon" id="recommend-heart"></i>
+    <i class="fa-solid fa-thumbs-down dislike-recommend recommend-icon" id="recommend-dislike"></i>
+  </div>
+        </div>
+
+            <p class="watched-text">WATCHED IT</p>
+</div>
 <script src="{{ url_for('static', filename='js/recommend_script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/fetch_functions.js') }}"></script>

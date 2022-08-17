@@ -1,0 +1,29 @@
+{% include "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/movie_page.css') }}">
+
+<div class="movie-page-info-div">
+<div class="mp-movie-title-div">
+<p class="mp-movie-title">{{ movie_dict['movie_title'] }}</p></div>
+      <p class="rm-director">{{ movie_dict['movie_director'] }}</p>
+
+      <div class="rm-tomatometer-div"><i class="fa-solid fa-graduation-cap rm-icon"></i><p class="rm-tomatometer">{{ movie_dict['movie_tomatometer'] }}</p></div>
+
+      <div class="rm-audience-div"><i class="fa-solid fa-user rm-icon"></i><p class="rm-audience">{{ movie_dict['movie_audience'] }}</p></div>
+
+
+       <p class="rm-date-runtime-PG">    {{ movie_dict['movie_date_runtime_PG'] }} </p>
+       <p class="rm-genres"> {{ movie_dict['movie_genre'] }}</p>
+    <p class="rm-writer"> {{ movie_dict['movie_writer'] }} </p>
+
+
+      <p class="rm-description">
+          {{ movie_dict['movie_description'] }}
+      </p>
+    <p class="rm-cast"> {{ movie_dict['movie_cast'] }}</p>
+      <p class="rm-studio-boxoffice"> {{ movie_dict['movie_producer_boxoffice'] }}</p>
+
+</div>
+
+     <img class="movie-page-image" id="recommend-image" src="{{ movie_dict['movie_url'] }}">

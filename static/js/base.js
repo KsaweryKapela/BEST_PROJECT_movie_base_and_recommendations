@@ -11,17 +11,12 @@ else if((document.URL.split('/')[document.URL.split('/').length - 1] == 'recomme
 RecommendNavbar.classList.add('item-disabled');
 }
 else{MyMoviesNavbar.classList.add('item-disabled');
-console.log(MyMoviesNavbar.classList)}
 
 
 for(var i = 0; i < allNavbar.length; i++)
 {
-  allNavbar[i].addEventListener('click', GoToUrL.bind(i));
+  allNavbar[i].addEventListener('click', GoToUrL.bind(i));}
 
   function GoToUrL(){
 window.location.href = urls[this]}
 }
-
-
-
-

@@ -26,8 +26,8 @@ class MoviebaseFilters:
         }
 
         self.audience_dict = {
-            'a-liked': MoviesDatabase.user_score > 50,
-            'a-hated': MoviesDatabase.user_score < 50,
+            'a-liked': MoviesDatabase.user_score > 70,
+            'a-hated': MoviesDatabase.user_score < 70,
             '': MoviesDatabase.title != 'Empty query'
         }
 
@@ -73,15 +73,16 @@ class MoviebaseFilters:
         else:
             ratings = MoviesDatabase.PG == self.rating
 
-        self.movies = self.movies.filter((ratings), (self.critics_dict[self.critics]),
-                                         (self.audience_dict[self.audience]))
+        self.movies = self.movies.filter(ratings, self.critics_dict.get(self.critics),
+                                         self.audience_dict[self.audience])
 
         if self.genres != ['']:
             for chosen_genre in self.genres:
                 self.movies = self.movies.filter(MoviesDatabase.genre.contains(chosen_genre))
 
     def return_movies(self):
-        self.search_by()
         self.order_by()
         self.filter_by()
+        self.search_by()
+
         return self.movies[self.index:self.index + 5]
