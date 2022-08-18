@@ -157,7 +157,9 @@ db.create_all()
 @app.context_processor
 def header():
     form = SearchForm()
-    username = current_user.username
+    username = ''
+    if current_user.is_authenticated:
+        username = current_user.username
     return dict(search_form=form, username=username)
 
 
@@ -223,7 +225,7 @@ def ignored(username, index):
     return render_template("index.html", movies=movies, right_arrow=check_for_arrow(movies))
 
 
-@app.route('/<movie_id>')
+@app.route('/movie/<movie_id>')
 def movie_page(movie_id):
     movie = MoviesDatabase.query.get(movie_id)
 
@@ -501,8 +503,12 @@ def recommendation_page():
 @app.route('/fetch_recommend', methods=['GET', 'POST'])
 def fetch_recommend():
     from recomendations import MovieRecommendations
-    recommend = MovieRecommendations()
-    movie_id = recommend.update_recommendations(current_user.id)
+    recommend = MovieRecommendations(current_user.id)
+    movie_id = recommend.update_recommendations()
+
+    if movie_id is None:
+        movie_id = recommend.get_good_movie()
+
     session['recommendations_movie_id'] = movie_id
 
     movie = MoviesDatabase.query.get(movie_id)

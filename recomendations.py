@@ -1,11 +1,12 @@
 import time
 from sqlalchemy.orm import lazyload, subqueryload, joinedload, selectinload, noload
 from main import MoviesDatabase, UsersFilms, db, UserSuggestion, Actors, Directors, Genres
+import random
 
 
 class MovieRecommendations:
 
-    def __init__(self):
+    def __init__(self, user_id):
         self.points = 0
         self.highest_score = 0
         self.movie_to_recommend = None
@@ -15,7 +16,8 @@ class MovieRecommendations:
         self.writers_dict = {}
         self.year_dict = {}
         self.PG_dict = {}
-        self.users_id_list = []
+        self.users_id_list = [movie.movie_id for movie in UsersFilms.query.filter(UsersFilms.user_id == user_id).all()]
+        self.user_id = user_id
 
     def prepare_score(self, movie, points):
         if movie.tag == 'heart':
@@ -43,11 +45,9 @@ class MovieRecommendations:
             else:
                 dictionary_name[item_def] = self.prepare_score(movie, points)
 
-    def populate_all_dictionaries(self, user_id):
-        self.users_id_list = [movie.movie_id for movie in UsersFilms.query.filter(UsersFilms.user_id == user_id).all()]
-
-        for movie in UsersFilms.query.filter(UsersFilms.user_id == user_id). \
-                filter(MoviesDatabase.id.in_(self.users_id_list)).\
+    def populate_all_dictionaries(self):
+        for movie in UsersFilms.query.filter(UsersFilms.user_id == self.user_id). \
+                filter(MoviesDatabase.id.in_(self.users_id_list)). \
                 join(UsersFilms.movies_database). \
                 options(joinedload(UsersFilms.movies_database)). \
                 join(UsersFilms.users_actors). \
@@ -55,7 +55,6 @@ class MovieRecommendations:
                 join(UsersFilms.users_genres). \
                 options(joinedload(UsersFilms.users_genres)). \
                 all():
-
             self.populate_dictionary(movie, movie.users_actors, self.actors_dict, 10)
             self.populate_dictionary(movie, movie.users_genres, self.genres_dict, 25)
             self.populate_dictionary(movie, movie.movies_database.director_of, self.directors_dict, 25)
@@ -111,11 +110,11 @@ class MovieRecommendations:
 
         self.give_points_for_score(movie)
 
-    def update_recommendations(self, user_id):
-        self.populate_all_dictionaries(user_id)
+    def update_recommendations(self):
+        self.populate_all_dictionaries()
         for movie in MoviesDatabase.query. \
                 filter(Actors.id.in_(self.get_liked_items(self.actors_dict))). \
-                filter(MoviesDatabase.computed_critic_score > 70).\
+                filter(MoviesDatabase.computed_critic_score > 70). \
                 filter(MoviesDatabase.id.notin_(self.users_id_list)). \
                 join(MoviesDatabase.actors). \
                 options(joinedload(MoviesDatabase.actors)). \
@@ -130,15 +129,11 @@ class MovieRecommendations:
             if self.points > self.highest_score:
                 self.highest_score = self.points
                 self.movie_to_recommend = movie.id
-
         return self.movie_to_recommend
 
+    def get_good_movie(self):
+        movie = MoviesDatabase.query.filter(MoviesDatabase.computed_critic_score > 85). \
+            filter(MoviesDatabase.computed_audience_score > 85).filter(MoviesDatabase.id.notin_(self.users_id_list)).first().id
+        return movie
 
-recommend = MovieRecommendations()
 
-start = time.perf_counter()
-
-recommend.update_recommendations(2)
-
-end = time.perf_counter()
-print(end - start)
