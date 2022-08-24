@@ -1,4 +1,4 @@
-# BEST_PROJECT_movie_base_and_recommendations
+# Movie_Base_And_Recommendations
 Website that uses huge scrapped database. Helps organize preferences, allows to explore new movies, comes with advanced algorythm that gives personalized recommnedations.
 
 Project is almost done except authorization (which is half-done), loading bars and mobile page/better responsivness.
