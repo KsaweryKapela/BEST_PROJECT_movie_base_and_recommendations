@@ -151,6 +151,22 @@ class Writers(db.Model):
     wrote = db.relationship('MoviesDatabase', secondary=movie_writers, backref='writer_of')
 
 
+movie_keywords = db.Table('movie_keywords',
+                          db.Column('keyword_id', db.Integer, db.ForeignKey('keywords.id')),
+                          db.Column('movie_id', db.Integer, db.ForeignKey('movies_database.id')))
+
+connected_keywords = db.Table('connected_keywords',
+                             db.Column('keyword_id', db.Integer, db.ForeignKey('keywords.id')),
+                             db.Column('connected_keywords_ids', db.Integer, db.ForeignKey('keywords.id')))
+
+
+class KeyWords(db.Model):
+    __tablename__ = 'keywords'
+    id = db.Column(db.Integer, primary_key=True)
+    word = db.Column(db.String(500), unique=False, nullable=True)
+    appeared = db.relationship('MoviesDatabase', secondary=movie_keywords, backref='appeared_in')
+
+
 db.create_all()
 
 
@@ -533,4 +549,4 @@ def fetch_recommend():
 
 
 if __name__ == "__main__":
-    app.run(port=1000, debug=True)
+    app.run(port=5000, debug=True)
