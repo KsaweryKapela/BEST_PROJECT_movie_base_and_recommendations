@@ -36,3 +36,4 @@ for movie in MoviesDatabase.query.filter_by(img_url='').all():
 
     else:
         print(movie.title + 'no results or empty results')
+        
