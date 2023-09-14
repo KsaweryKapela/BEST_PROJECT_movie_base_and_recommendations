@@ -1,8 +1,8 @@
 import time
 from sqlalchemy.orm import lazyload, subqueryload, joinedload, selectinload, noload
-from main import MoviesDatabase, UsersFilms, db, UserSuggestion, Actors, Directors, Genres
+from main import MoviesDatabase, UsersFilms, db, UserSuggestion, Actors, Directors, Genres, connected_keywords, Keyword
 import random
-
+from sqlalchemy import select
 
 class MovieRecommendations:
 
@@ -90,9 +90,25 @@ class MovieRecommendations:
         if movie.computed_audience_score:
             self.points += movie.computed_audience_score
 
+
+    def give_points_for_keywords(self, movie):
+        ###### KEEP ON WORKING
+        connected_user_words = []
+        for movie in UsersFilms.query.filter(UsersFilms.user_id == self.user_id):
+            for keyword in movie.users_keyword:
+                target_keyword = Keyword.query.get(keyword.id)
+
+                if target_keyword:
+                    print([connected_keyword.word for connected_keyword in target_keyword.connected_keywords])
+        print(self.directors_dict)
+
     def split_the_points(self, movie):
+        ###################################################################################
+        
+        ###################################################################################
         self.points = 0
 
+        self.give_points_for_keywords(movie)
         self.add_points(movie.actors, self.actors_dict)
         self.add_points(movie.genres, self.genres_dict)
         self.add_points(movie.director_of, self.directors_dict)
@@ -113,16 +129,19 @@ class MovieRecommendations:
     def update_recommendations(self):
         self.populate_all_dictionaries()
         for movie in MoviesDatabase.query. \
-                filter(Actors.id.in_(self.get_liked_items(self.actors_dict))). \
                 filter(MoviesDatabase.computed_critic_score > 70). \
                 filter(MoviesDatabase.id.notin_(self.users_id_list)). \
-                join(MoviesDatabase.actors). \
-                options(joinedload(MoviesDatabase.actors)). \
-                join(MoviesDatabase.genres). \
-                options(joinedload(MoviesDatabase.genres)). \
-                join(MoviesDatabase.director_of). \
-                options(joinedload(MoviesDatabase.director_of)). \
                 all():
+                # filter(Actors.id.in_(self.get_liked_items(self.actors_dict))). \
+                
+
+                # join(MoviesDatabase.actors). \
+                # options(joinedload(MoviesDatabase.actors)). \
+                # join(MoviesDatabase.genres). \
+                # options(joinedload(MoviesDatabase.genres)). \
+                # join(MoviesDatabase.director_of). \
+                # options(joinedload(MoviesDatabase.director_of)). \
+
 
             self.split_the_points(movie)
 

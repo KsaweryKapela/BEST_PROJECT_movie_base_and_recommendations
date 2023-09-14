@@ -4,11 +4,12 @@ from flask import Flask, render_template, redirect, url_for, request, session
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from sqlalchemy import or_, cast, Integer, and_
+from sqlalchemy import or_, cast, Integer, and_, MetaData
 from forms import *
 from flask_login import UserMixin
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from functions import check_for_arrow
+
 
 app = Flask(__name__)
 API_KEY = "def26f3a5c5a48319f33d74bb1bd2009"
@@ -16,8 +17,16 @@ app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///top-movies.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app, session_options={"autoflush": False})
-migrate = Migrate(app, db)
+naming_convention = {
+    "ix": 'ix_%(column_0_label)s',
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(column_0_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s"
+}
+metadata = MetaData(naming_convention=naming_convention)
+db = SQLAlchemy(app, session_options={"autoflush": False}, metadata=metadata)
+migrate = Migrate(app, db, render_as_batch=True)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -159,13 +168,19 @@ connected_keywords = db.Table('connected_keywords',
                              db.Column('keyword_id', db.Integer, db.ForeignKey('keywords.id')),
                              db.Column('connected_keywords_ids', db.Integer, db.ForeignKey('keywords.id')))
 
+user_movie_keywords = db.Table('user_word_connections',
+                             db.Column('keyword_id', db.Integer, db.ForeignKey('keywords.id')),
+                             db.Column('movie_id', db.Integer, db.ForeignKey('users_films.id')),
+                             )
 
-class KeyWords(db.Model):
+class Keyword(db.Model):
     __tablename__ = 'keywords'
     id = db.Column(db.Integer, primary_key=True)
     word = db.Column(db.String(500), unique=False, nullable=True)
-    appeared = db.relationship('MoviesDatabase', secondary=movie_keywords, backref='appeared_in')
-
+    keyword_of = db.relationship('MoviesDatabase', secondary=movie_keywords, backref='keywords')
+    user_keyword_of = db.relationship('UsersFilms', secondary=user_movie_keywords, backref='users_keyword')
+    connected_keywords = db.relationship('Keyword', secondary=connected_keywords, primaryjoin=id == connected_keywords.c.keyword_id,
+                                         secondaryjoin=id == connected_keywords.c.connected_keywords_ids, backref='connected_by')
 
 db.create_all()
 
@@ -330,6 +345,9 @@ def edit_user_lists():
                     for genre in MoviesDatabase.query.filter_by(id=session[f'movie{index}']).first().genres:
                         genre = Genres.query.filter_by(id=genre.id).first()
                         genre.user_genre_of.append(movie)
+                    for keyword in MoviesDatabase.query.filter_by(id=session[f'movie{index}']).first().keywords:
+                        keyword = Keyword.query.filter_by(id=keyword.id).first()
+                        keyword.user_keyword_of.append(movie)
 
             elif command == 'del':
                 movies = UsersFilms.query.filter(and_(UsersFilms.user_id == current_user.id),
