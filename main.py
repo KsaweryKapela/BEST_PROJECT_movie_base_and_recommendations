@@ -539,7 +539,7 @@ def fetch_recommend():
     from recomendations import MovieRecommendations
     recommend = MovieRecommendations(current_user.id)
     movie_id = recommend.update_recommendations()
-
+    recommend.clean_up_dictionaries()
     if movie_id is None:
         movie_id = recommend.get_good_movie()
 

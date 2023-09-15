@@ -16,6 +16,7 @@ class MovieRecommendations:
         self.writers_dict = {}
         self.year_dict = {}
         self.PG_dict = {}
+        self.keywords_dict = {}
         self.users_id_list = [movie.movie_id for movie in UsersFilms.query.filter(UsersFilms.user_id == user_id).all()]
         self.user_id = user_id
 
@@ -38,6 +39,15 @@ class MovieRecommendations:
             else:
                 dictionary_name[item.id] = self.prepare_score(movie, points)
 
+    def get_connected_words(self, column_name):
+        connected_user_words = []
+        for keyword in column_name:
+            target_keyword = Keyword.query.get(keyword.id)
+
+            if target_keyword:
+                connected_user_words += target_keyword.connected_keywords
+        return connected_user_words
+
     def get_simple_dict(self, movie, item_def, dictionary_name, points):
         if item_def != '':
             if item_def in dictionary_name:
@@ -54,6 +64,8 @@ class MovieRecommendations:
                 options(joinedload(UsersFilms.users_actors)). \
                 join(UsersFilms.users_genres). \
                 options(joinedload(UsersFilms.users_genres)). \
+                join(UsersFilms.users_keyword). \
+                options(joinedload(UsersFilms.users_genres)). \
                 all():
             self.populate_dictionary(movie, movie.users_actors, self.actors_dict, 10)
             self.populate_dictionary(movie, movie.users_genres, self.genres_dict, 25)
@@ -61,6 +73,8 @@ class MovieRecommendations:
             self.populate_dictionary(movie, movie.movies_database.writer_of, self.writers_dict, 10)
             self.get_simple_dict(movie, movie.movies_database.release_date[:4], self.year_dict, 10)
             self.get_simple_dict(movie, movie.movies_database.PG, self.PG_dict, 25)
+            connected_words = self.get_connected_words(movie.users_keyword)
+            self.populate_dictionary(movie, connected_words, self.keywords_dict, 10)
 
     def clean_up_dictionaries(self):
         self.actors_dict = {}
@@ -70,6 +84,7 @@ class MovieRecommendations:
         self.year_dict = {}
         self.PG_dict = {}
         self.users_id_list = []
+        self.keywords_dict = {}
 
     def add_points(self, table_name, dict_name):
         for item in table_name:
@@ -91,28 +106,18 @@ class MovieRecommendations:
             self.points += movie.computed_audience_score
 
 
-    def give_points_for_keywords(self, movie):
-        ###### KEEP ON WORKING
-        connected_user_words = []
-        for movie in UsersFilms.query.filter(UsersFilms.user_id == self.user_id):
-            for keyword in movie.users_keyword:
-                target_keyword = Keyword.query.get(keyword.id)
-
-                if target_keyword:
-                    print([connected_keyword.word for connected_keyword in target_keyword.connected_keywords])
-        print(self.directors_dict)
-
     def split_the_points(self, movie):
         ###################################################################################
-        
+        # self.give_points_for_keywords(movie)
         ###################################################################################
         self.points = 0
 
-        self.give_points_for_keywords(movie)
+ 
         self.add_points(movie.actors, self.actors_dict)
         self.add_points(movie.genres, self.genres_dict)
         self.add_points(movie.director_of, self.directors_dict)
         self.add_points(movie.writer_of, self.writers_dict)
+        self.add_points(movie.keywords, self.keywords_dict)
 
         if int(movie.release_date[:4]) - 1 in self.year_dict.keys():
             self.points += self.year_dict[movie.release_date[:4]]
@@ -129,7 +134,7 @@ class MovieRecommendations:
     def update_recommendations(self):
         self.populate_all_dictionaries()
         for movie in MoviesDatabase.query. \
-                filter(MoviesDatabase.computed_critic_score > 70). \
+                filter(MoviesDatabase.computed_critic_score > 90). \
                 filter(MoviesDatabase.id.notin_(self.users_id_list)). \
                 all():
                 # filter(Actors.id.in_(self.get_liked_items(self.actors_dict))). \
@@ -147,8 +152,12 @@ class MovieRecommendations:
 
             if self.points > self.highest_score:
                 self.highest_score = self.points
-                self.movie_to_recommend = movie.id
-        return self.movie_to_recommend
+                self.movie_to_recommend = movie
+        for item in self.movie_to_recommend.keywords:
+            if item.id in self.keywords_dict.keys():
+                print(item.word, self.keywords_dict[item.id])
+
+        return self.movie_to_recommend.id
 
     def get_good_movie(self):
         movie = MoviesDatabase.query.filter(MoviesDatabase.computed_critic_score > 85). \
